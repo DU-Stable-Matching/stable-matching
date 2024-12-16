@@ -11,7 +11,7 @@ Implement a modified Gale–Shapley algorithm to stabaly match RAs to Residence 
 All Buildings can have first-year RAs (now RMs ig)
 
 ## Backend Stack
-idk
+idk - Java, Python, or straight JavaScript/TypeScript?
 
 ## Frontend Stack
 Probably React with like Node.js and other things, also, idk

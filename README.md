@@ -12,16 +12,12 @@ Implement a modified Gale–Shapley algorithm to stably match RAs to Residence H
 All Buildings can have first-year RAs (now RMs ig)
 
 ### Backend Stack
-Java, Python, or straight TypeScript? DB - SQL (mySQL) v. noSQL (Mongo)?
+Python - Django
 
 ### Frontend Stack
-Probably React with like Node.js and other things, also, idk. I like tailwind css for styling so I already added the config but we can easily shift off that.
+React using TypeScript
 
-## Folder Structure
-
-I have not shifted the default React template too much, just added some folder structure in src so we seperate our components, pages, etc.
-
-api is reserved for our api layer if we choose to use any apis. tests is for tests, probably Jest tests?
+used create react app, can use other tool if we want 
 
 ## How to Run
 

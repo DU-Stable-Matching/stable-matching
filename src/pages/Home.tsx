@@ -1,6 +1,6 @@
 import React from 'react'
-import Hero from '../components/Hero'
-import TopBar from '../components/TopBar'
+import Hero from '../components/Hero.tsx'
+import TopBar from '../components/TopBar.tsx'
 
 const Home = () => {
   return (

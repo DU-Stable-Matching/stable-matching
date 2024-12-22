@@ -7,7 +7,7 @@ const TopBar = () => {
         <div className="fixed w-full">
         <div className="bg-dark-green flex justify-between px-12 h-14">
             <a href="/" className="flex items-center text-white">
-                <h1 className="text-2xl font-semibold"> OptiMatch </h1>
+                <h1 className="text-xl font-semibold"> OptiMatch </h1>
             </a>
  
             <div className="flex items-center">
@@ -54,8 +54,8 @@ const TopBar = () => {
                         <FaBars size={20} color='white'/>
                     </div>
                 )}
-                    <button className = "px-4 py-2 bg-dark-green border-white border-2 text-white rounded-md"> Sign Up </button>
-                    <button className = "px-4 py-2 bg-white border-white border-2 text-dark-green rounded-md"> Login </button>
+                    <button className = "px-3 py-1 bg-dark-green border-white border-2 text-white rounded-md"> Sign Up </button>
+                    <button className = "px-3 py-1 bg-white border-white border-2 text-dark-green rounded-md"> Login </button>
                 </div>
             </div>
         </div>

@@ -1,12 +1,10 @@
 import React from 'react';
-import TopBar from './TopBar.tsx';
+import Home from './../pages/Home.tsx';
 
 function App() {
   return (
-    <div className="bg-myrtle-green">
-      <div >
-        <TopBar/>
-      </div>
+    <div>
+        <Home/>
     </div>
   );
 }

@@ -54,7 +54,7 @@ const TopBar = () => {
                         <FaBars size={20} color='white'/>
                     </div>
                 )}
-                    <button className = "px-3 py-1 bg-dark-green border-white border-2 text-white rounded-md"> Sign Up </button>
+                    <button className = "px-3 py-1 bg-transparent border-white border-2 text-white rounded-md"> Sign Up </button>
                     <button className = "px-3 py-1 bg-white border-white border-2 text-dark-green rounded-md"> Login </button>
                 </div>
             </div>

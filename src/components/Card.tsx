@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { motion, useMotionValue, useTransform, useAnimation } from "framer-motion";
+import { FaRegCircleXmark } from "react-icons/fa6";
+import { BiHeartCircle } from "react-icons/bi";
 
 const Card = ({ onSwipeLeft = () => {}, onSwipeRight = () => {}, name = "" }) => {
     const motionValue = useMotionValue(0);
@@ -49,19 +51,13 @@ const Card = ({ onSwipeLeft = () => {}, onSwipeRight = () => {}, name = "" }) =>
                     <div className="flex justify-center">
                         <h2 className="font-normal">{name}</h2>
                     </div>
-                    <div className="mt-4 flex space-x-4 justify-center">
-                        <button
-                            className="px-2 py-2 bg-periwinkle text-black rounded-md"
+                    <div className="mt-4 flex space-x-8 justify-center align-middle items-center">
+                        <FaRegCircleXmark size={50} color="black" className={"cursor-pointer"}
                             onClick={() => handleSwipe("left")}
-                        >
-                            Interested
-                        </button>
-                        <button
-                            className="px-4 py-2 bg-myrtle-green text-white rounded-md"
+                        />
+                        <BiHeartCircle size={60} color="black" className={"cursor-pointer"}
                             onClick={() => handleSwipe("right")}
-                        >
-                            Not Interested
-                        </button>
+                        />
                     </div>
                 </div>
             </motion.div>

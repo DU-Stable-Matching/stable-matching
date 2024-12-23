@@ -11,10 +11,12 @@ const FAQ = () => {
   ]);
 
   const changeShowAnswer = (index: number) => {
-    setShowAnswer((prev) => {
-      prev[index] = !prev[index];
-      return [...prev];
-    });
+    setShowAnswer(prev => prev.map((item, i) => {
+      if (i === index) {
+        return !item;
+      }
+      return item;
+    }));
   };
 
   return (
@@ -28,7 +30,7 @@ const FAQ = () => {
           <div className="flex flex-col border-t border-b items-start justify-center p-4">
             <div className="flex justify-between w-full align-center">
               <h1 className="text-lg leading-7">How do I reset?</h1>
-              <a
+              <div
                 className="text-lg leading-7 rounded-lg p-2"
                 onClick={() => changeShowAnswer(0)}
               >
@@ -37,7 +39,7 @@ const FAQ = () => {
                 ) : (
                   <img src={require("../assets/img/Vector.png")} alt="" />
                 )}
-              </a>
+              </div>
             </div>
             {showAnswer[0] && (
               <p className="my-4">
@@ -50,7 +52,7 @@ const FAQ = () => {
           <div className="flex flex-col border-t border-b items-start justify-center p-4">
             <div className="flex justify-between w-full align-center">
               <h1 className="text-lg leading-7">How do I change my email?</h1>
-              <a
+              <div
                 className="text-lg leading-7 rounded-lg p-2"
                 onClick={() => changeShowAnswer(1)}
               >
@@ -59,7 +61,7 @@ const FAQ = () => {
                 ) : (
                   <img src={require("../assets/img/Vector.png")} alt="" />
                 )}
-              </a>
+              </div>
             </div>
             {showAnswer[1] && (
               <p className="my-4">
@@ -72,7 +74,7 @@ const FAQ = () => {
           <div className="flex flex-col border-t border-b items-start justify-center p-4">
             <div className="flex justify-between w-full align-center">
               <h1 className="text-lg leading-7">How do I delete my account?</h1>
-              <a
+              <div
                 className="text-lg leading-7 rounded-lg p-2"
                 onClick={() => changeShowAnswer(2)}
               >
@@ -81,7 +83,7 @@ const FAQ = () => {
                 ) : (
                   <img src={require("../assets/img/Vector.png")} alt="" />
                 )}
-              </a>
+              </div>
             </div>
             {showAnswer[2] && (
               <p className="my-4">
@@ -94,7 +96,7 @@ const FAQ = () => {
           <div className="flex flex-col border-t border-b items-start justify-center p-4">
             <div className="flex justify-between w-full align-center">
               <h1 className="text-lg leading-7">How do I contact support?</h1>
-              <a
+              <div
                 className="text-lg leading-7 rounded-lg p-2"
                 onClick={() => changeShowAnswer(3)}
               >
@@ -103,7 +105,7 @@ const FAQ = () => {
                 ) : (
                   <img src={require("../assets/img/Vector.png")} alt="" />
                 )}
-              </a>
+              </div>
             </div>
             {showAnswer[3] && (
               <p className="my-4">
@@ -116,7 +118,7 @@ const FAQ = () => {
           <div className="flex flex-col border-t border-b items-start justify-center p-4">
             <div className="flex justify-between w-full align-center">
               <h1 className="text-lg leading-7">How do I update my profile?</h1>
-              <a
+              <div
                 className="text-lg leading-7 rounded-lg p-2"
                 onClick={() => changeShowAnswer(4)}
               >
@@ -125,7 +127,7 @@ const FAQ = () => {
                 ) : (
                   <img src={require("../assets/img/Vector.png")} alt="" />
                 )}
-              </a>
+              </div>
             </div>
             {showAnswer[4] && (
               <p className="my-4">
@@ -143,7 +145,7 @@ const FAQ = () => {
           </p>
           <Link
             className="border-2 border-white rounded-lg py-4 px-6"
-            to="/contact"
+            to="/#contact"
           >
             Contact
           </Link>

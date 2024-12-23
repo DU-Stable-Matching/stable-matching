@@ -18,7 +18,7 @@ const Card = ({ onSwipeLeft = () => {}, onSwipeRight = () => {}, name = "" }) =>
     const handleSwipe = async (direction) => {
         const targetX = direction === "left" ? -200 : 200;
 
-        await animControls.start({ x: targetX, opacity: 0, transition: { duration: 0.15 } });
+        await animControls.start({ x: targetX, opacity: 0, transition: { duration: 0.3 } });
 
         if (direction === "left") {
             onSwipeLeft();

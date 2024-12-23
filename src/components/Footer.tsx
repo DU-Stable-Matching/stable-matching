@@ -9,7 +9,7 @@ const Footer = () => {
             <h2 className='text-lg text-white'>OptiMatch</h2>
             <ul className="hidden lg:flex px-8 text-white font-semibold">
                 <li> 
-                    <a href="#home">Home</a>
+                    <a href="/#home">Home</a>
                 </li>
                 <li> 
                     <a href="/#about">About Us</a>

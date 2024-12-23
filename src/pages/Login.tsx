@@ -1,10 +1,15 @@
 import React from 'react'
+import TopBar from '../components/TopBar.tsx'
+import LoginHero from '../components/LoginHero.tsx'
 
 const Login = () => {
     return(
-        <div>
-            this is the loging page
-        </div>
+        <>
+            <TopBar/>
+            <LoginHero/>
+            <LoginHero/>
+
+        </>
     )
 }
 

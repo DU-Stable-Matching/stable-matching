@@ -13,16 +13,16 @@ const TopBar = () => {
             <div className="flex items-center">
                 <ul className="hidden lg:flex px-8 text-white">
                     <li> 
-                        <a href="#home">Home</a>
+                        <a href="/home">Home</a>
                     </li>
                     <li> 
-                        <a href="#about">About Us</a>
+                        <a href="/#about">About Us</a>
                     </li>
                     <li> 
-                        <a href="#contact">Contact</a>
+                        <a href="/#contact">Contact</a>
                     </li>
                     <li> 
-                        <a href="#services">Services</a>
+                        <a href="/#services">Services</a>
                     </li>
                 </ul>
 
@@ -33,16 +33,16 @@ const TopBar = () => {
                     </div>
                     <ul className="text-center flex-col w-full h-full space-y-4">
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}> 
-                            <a href="#home">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}> 
-                            <a href="#about">About Us</a>
+                            <a href="/#about">About Us</a>
                         </li>
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}> 
-                            <a href="#contact">Contact</a>
+                            <a href="/#contact">Contact</a>
                         </li>
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}> 
-                            <a href="#services">Services</a>
+                            <a href="/#services">Services</a>
                         </li>
                     </ul>
                 </div> 

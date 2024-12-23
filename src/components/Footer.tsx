@@ -9,16 +9,16 @@ const Footer = () => {
             <h2 className='text-lg text-white'>OptiMatch</h2>
             <ul className="hidden lg:flex px-8 text-white font-semibold">
                 <li> 
-                    <a href="#home">Home</a>
+                    <a href="/#home">Home</a>
                 </li>
                 <li> 
-                    <a href="#about">About Us</a>
+                    <a href="/#about">About Us</a>
                 </li>
                 <li> 
-                    <a href="#contact">Contact</a>
+                    <a href="/#contact">Contact</a>
                 </li>
                 <li> 
-                    <a href="#services">Services</a>
+                    <a href="/#services">Services</a>
                 </li>
             </ul>
             <SocialRow />

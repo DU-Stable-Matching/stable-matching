@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
+import LogInModal from "../modals/LogInModal.tsx";
 
 const LoginHero = () => {
   const someFunc = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("form submitted");
   };
+
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="w-full min-h-screen bg-myrtle-green flex items-center justify-center py-28 px-16">
       {/* white box */}
@@ -24,16 +28,19 @@ const LoginHero = () => {
               className="bg-myrtle-green text-white placeholder-white p-3 text-base leading-7 rounded-lg border-2 mr-4 "
               type="text"
               placeholder="Username or Email"
-              name=""
-              id=""
             />
             <button
-              className=" text-black bg-white py-3 px-6 rounded-lg my-4 leading-7"
-              type="submit"
+              className="text-black bg-white py-3 px-6 rounded-lg my-4 leading-7"
+              type="button"
+              onClick={() => setShowModal(true)}
             >
               Login
             </button>
-          </form>
+            </form>
+          <LogInModal
+            show={showModal}
+            onClose={() => setShowModal(false)}
+          />
         </div>
         <div className="w-full h-full p-3 items-center hidden md:flex max-w-6xl">
           <img

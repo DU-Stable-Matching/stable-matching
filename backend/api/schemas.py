@@ -2,17 +2,16 @@ from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 
 
-#----------------------------------ADMIN SCHEMAS--------------------------------
-class AdminCreate(BaseModel):
+# ----------------------------------ADMIN SCHEMAS--------------------------------
+class AdminLogin(BaseModel):
     du_id: str
-    name: str
-    email: str
-    building: str  
+    password: str
     model_config = ConfigDict(from_attributes=True)
 
+
 class AdminRankingCreate(BaseModel):
-    admin_du_id: str
-    applicant_du_id: str
+    admin_id: int
+    applicant_id: int
     rank: int
 
 
@@ -21,20 +20,30 @@ class BuildingCreate(BaseModel):
     ra_needed: int
     boss_du_id: Optional[str]
 
+
 class BuildingRead(BuildingCreate):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
-#----------------------------------ADMIN SCHEMAS--------------------------------
 
+# ----------------------------------USER SCHEMAS--------------------------------
 class BuildingPref(BaseModel):
     building_name: str
     rank: int
+
 
 class UserCreate(BaseModel):
     du_id: str
     name: str
     email: str
+    password: str
+    year_in_college: Optional[int] = None
+
+
+class UserLogin(BaseModel):
+    du_id: str
+    password: str
+
 
 class UserRead(UserCreate):
     year_in_college: Optional[int] = None
@@ -42,18 +51,11 @@ class UserRead(UserCreate):
     why_ra: Optional[str] = None
     resume_path: Optional[str] = None
     preferences: List[BuildingPref] = []
-
     model_config = ConfigDict(from_attributes=True)
-    # class Config:
-    #     orm_mode = True
+
 
 class RAAppCreate(BaseModel):
-    du_id: str
-    year_in_college: int
+    id: int
     is_returner: bool
     why_ra: str
     preferences: List[BuildingPref]
-
-
-    #     orm_mode = True
-

@@ -2,61 +2,42 @@ import React, { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../userState.ts";
 
-const LoginScreen: React.FC = () => {
+const SignupScreen: React.FC = () => {
   const setUserID = useUserStore((s) => s.setUserID);
-  const givePreferences = useUserStore((s) => s.givePrefrences);
   const navigate = useNavigate();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"admin" | "applicant">("applicant");
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Perform real authentication
-    setUserID(1);
 
-    if (role === "applicant") {
-      givePreferences ? navigate("/dashboard", { replace: true }) : navigate("/user_pref", { replace: true });
-    } else {
-      navigate("/admin", { replace: true });
-    }
+    // Authenticate and sign up user (omitted), then set userID
+    setUserID(1);
+    navigate("/"); // Redirect to Dashboard
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-periwinkle px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        {/* Role Toggle */}
-        <div className="inline-flex border border-dark-green rounded-full overflow-hidden mb-6">
-          <button
-            type="button"
-            onClick={() => setRole("applicant")}
-            className={`flex-1 px-4 py-2 text-center font-medium transition-colors ${
-              role === "applicant"
-                ? "bg-dark-green text-white"
-                : "bg-white text-dark-green"
-            }`}
-          >
-            Applicant
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole("admin")}
-            className={`flex-1 px-4 py-2 text-center font-medium transition-colors ${
-              role === "admin"
-                ? "bg-dark-green text-white"
-                : "bg-white text-dark-green"
-            }`}
-          >
-            Administrator
-          </button>
-        </div>
-
         <h2 className="text-2xl font-bold text-dark-green mb-6 text-center">
-          {role === "admin" ? "Admin Login" : "Applicant Login"}
+          Sign Up
         </h2>
-
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="name" className="block text-dark-green mb-1">
+              Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
+            />
+          </div>
           <div>
             <label htmlFor="email" className="block text-dark-green mb-1">
               Email
@@ -70,7 +51,6 @@ const LoginScreen: React.FC = () => {
               className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
             />
           </div>
-
           <div>
             <label htmlFor="password" className="block text-dark-green mb-1">
               Password
@@ -84,20 +64,11 @@ const LoginScreen: React.FC = () => {
               className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
             />
           </div>
-
           <button
             type="submit"
             className="w-full bg-dark-green text-white py-2 rounded-lg font-medium hover:bg-myrtle-green transition-colors"
           >
-            Login
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate("/signup")}
-            className="w-full bg-white text-dark-green py-2 rounded-lg font-medium border border-dark-green hover:bg-myrtle-green hover:text-white transition-colors"
-          >
-            Don't have an account? Create one
+            Sign Up
           </button>
         </form>
       </div>
@@ -105,4 +76,4 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;

@@ -1,14 +1,14 @@
 import React from "react";
 import TopBar from "../components/TopBar.tsx";
-import LoginHero from "../components/LoginHero.tsx";
+import SignupHero from "../components/SignupHero.tsx";
 
-const Login = () => {
+const Signup = () => {
   return (
     <>
       <TopBar />
-      <LoginHero />
+      <SignupHero />
     </>
   );
 };
 
-export default Login;
+export default Signup;

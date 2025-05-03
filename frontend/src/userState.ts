@@ -14,7 +14,7 @@ interface UserState {
 export const useUserStore = create<UserState>((set, get) => ({
     userID: null,
     email: null,
-    givePrefrences: true,
+    givePrefrences: false,
     setUserID: (userID) => set({ userID }),
     setEmail: (email) => set({ email }),
     setGivePrefrences: (givePrefrences) => set({ givePrefrences }),

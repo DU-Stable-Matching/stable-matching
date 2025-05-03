@@ -1,29 +1,17 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from sqlalchemy import MetaData
+from sqlalchemy.orm import Session
+from typing import List
+import os
 
-# Database setup
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+from database import SessionLocal, engine
+from models import Base, Applicant, BuildingPreference
+from schemas import UserCreate, UserRead, RAAppCreate, BuildingPref
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-# ORM model
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    email = Column(String, unique=True, index=True)
-
-# Create tables
 Base.metadata.create_all(bind=engine)
 
-# FastAPI app
 app = FastAPI()
 
-# Dependency to get DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -31,33 +19,71 @@ def get_db():
     finally:
         db.close()
 
-# Schemas
-from pydantic import BaseModel
-
-class UserCreate(BaseModel):
-    name: str
-    email: str
-
-class UserRead(BaseModel):
-    id: int
-    name: str
-    email: str
-
-    class Config:
-        orm_mode = True
-
-# Routes
-@app.post("/users/", response_model=UserRead)
+@app.post("/create_applicant/", response_model=UserRead)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    new_user = User(name=user.name, email=user.email)
+    existing = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="DU ID already exists.")
+    new_user = Applicant(du_id=user.du_id, name=user.name, email=user.email)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
 
-@app.get("/users/", response_model=list[UserRead])
-def read_users(db: Session = Depends(get_db)):
-    return db.query(User).all()
+@app.post("/apply/")
+def apply(data: RAAppCreate, db: Session = Depends(get_db)):
+    user = db.query(Applicant).filter(Applicant.du_id == data.du_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.year_in_college = data.year_in_college
+    user.is_returner = data.is_returner
+    user.why_ra = data.why_ra
+    user.resume_path = None  
+
+
+    db.query(BuildingPreference).filter(BuildingPreference.applicant_du_id == data.du_id).delete()
+
+    for pref in data.preferences:
+        db.add(BuildingPreference(
+            building_name=pref.building_name,
+            rank=pref.rank,
+            applicant_du_id=data.du_id
+        ))
+
+    db.commit()
+    return {"message": "Application submitted!"}
+
+
+@app.get("/applicants/{du_id}", response_model=UserRead)
+def get_applicant(du_id: str, db: Session = Depends(get_db)):
+    user = db.query(Applicant).filter(Applicant.du_id == du_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Not found")
+    return user
+
+@app.post("/upload-resume/{du_id}")
+def upload_resume(du_id: str, resume: UploadFile = File(...), db: Session = Depends(get_db)):
+    applicant = db.query(Applicant).filter(Applicant.du_id == du_id).first()
+    if not applicant:
+        raise HTTPException(status_code=404, detail="Applicant not found")
+
+    if not resume.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDFs allowed.")
+
+    os.makedirs("resumes", exist_ok=True)
+    save_path = f"resumes/{du_id}_{resume.filename}"
+    with open(save_path, "wb") as f:
+        f.write(resume.file.read())
+
+    applicant.resume_path = save_path
+    db.commit()
+    return {"message": "Resume uploaded!", "path": save_path}
+
+@app.delete("/reset-database/")
+def reset_database():
+    meta = MetaData()
+    meta.reflect(bind=engine)
+    meta.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    return {"message": "Database reset successfully!"}

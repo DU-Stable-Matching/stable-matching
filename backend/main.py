@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File
+from sqlalchemy import MetaData
 from sqlalchemy.orm import Session
 from typing import List
 import os
@@ -79,3 +80,10 @@ def upload_resume(du_id: str, resume: UploadFile = File(...), db: Session = Depe
     db.commit()
     return {"message": "Resume uploaded!", "path": save_path}
 
+@app.delete("/reset-database/")
+def reset_database():
+    meta = MetaData()
+    meta.reflect(bind=engine)
+    meta.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    return {"message": "Database reset successfully!"}

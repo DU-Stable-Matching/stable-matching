@@ -1,5 +1,5 @@
 // src/App.tsx
-import React from 'react';
+import React, { JSX } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home.tsx';
 import Pref from './pages/Pref.tsx';

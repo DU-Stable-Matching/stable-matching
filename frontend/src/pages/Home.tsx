@@ -11,9 +11,10 @@ const Home = () => {
     <>
       <TopBar/>
       <Hero/>
-      <AboutUs/>
+      {/* side project not startup so don't care about there componenets */}
+      {/* <AboutUs/>
       <SignUpSlice/>
-      <Footer/>
+      <Footer/> */}
     </>
   )
 }

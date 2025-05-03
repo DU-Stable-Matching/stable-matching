@@ -1,5 +1,31 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
+
+
+#----------------------------------ADMIN SCHEMAS--------------------------------
+class AdminCreate(BaseModel):
+    du_id: str
+    name: str
+    email: str
+    building: str  
+    model_config = ConfigDict(from_attributes=True)
+
+class AdminRankingCreate(BaseModel):
+    admin_du_id: str
+    applicant_du_id: str
+    rank: int
+
+
+class BuildingCreate(BaseModel):
+    name: str
+    ra_needed: int
+    boss_du_id: Optional[str]
+
+class BuildingRead(BuildingCreate):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+#----------------------------------ADMIN SCHEMAS--------------------------------
 
 class BuildingPref(BaseModel):
     building_name: str
@@ -17,8 +43,9 @@ class UserRead(UserCreate):
     resume_path: Optional[str] = None
     preferences: List[BuildingPref] = []
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+    # class Config:
+    #     orm_mode = True
 
 class RAAppCreate(BaseModel):
     du_id: str
@@ -26,3 +53,7 @@ class RAAppCreate(BaseModel):
     is_returner: bool
     why_ra: str
     preferences: List[BuildingPref]
+
+
+    #     orm_mode = True
+

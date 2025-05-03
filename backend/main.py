@@ -4,10 +4,11 @@ from sqlalchemy.orm import Session
 from typing import List
 import os
 
+from setup_db import seed_initial_buildings
+
 from database import SessionLocal, engine
 from models import Admin, AdminRanking, Base, Applicant, Building, BuildingPreference
-from schemas import AdminRankingCreate, BuildingCreate, BuildingRead, UserCreate, UserRead, RAAppCreate, AdminCreate, AdminRead
-
+from schemas import AdminRankingCreate, BuildingCreate, BuildingRead, UserCreate, UserRead, RAAppCreate, AdminCreate
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -19,9 +20,17 @@ def get_db():
     finally:
         db.close()
 
+
+
+@app.on_event("startup")
+def on_startup():
+    seed_initial_buildings()
+
+
+
 #--------------------------------USER ROUTES--------------------------------
 
-@app.post("/create_applicant/", response_model=UserRead)
+@app.post("/create_applicant/")
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     existing = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
     if existing:
@@ -30,7 +39,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+    return new_user.du_id
 
 @app.post("/apply/")
 def apply(data: RAAppCreate, db: Session = Depends(get_db)):
@@ -103,32 +112,67 @@ def all_applicants_with_preferences(db: Session = Depends(get_db)):
 
     return result
 
-#--------------------------------ADMIN ROUTES--------------------------------
-@app.post("/create_admin/", response_model=AdminRead)
+
+@app.get("/buildings/")
+def get_buildings(db: Session = Depends(get_db)):
+    buildings = db.query(Building).all()
+    #convert buidling object to dict
+    result = []
+    for building in buildings:  
+        print(building.id)
+        result.append({
+            "id": building.id,
+            "name": building.name,
+            "ra_needed": building.ra_needed,
+            "boss_du_id": building.boss_du_id
+        })
+    return result
+#-------------------------------RESET DATABASE-----------------------------------
+
+@app.delete("/reset-database/")
+def reset_database():
+    meta = MetaData()
+    meta.reflect(bind=engine)
+    meta.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    return {"message": "Database reset successfully!"}
+
+
+#-------------------------------ADMIN-----------------------------------
+@app.post("/create_admin/")
 def create_admin(admin: AdminCreate, db: Session = Depends(get_db)):
     if db.query(Admin).filter(Admin.du_id == admin.du_id).first():
         raise HTTPException(status_code=400, detail="Admin already exists")
 
+    # Query the Building instance
+    building_instance = db.query(Building).filter(Building.name == admin.building).first()
+    if not building_instance:
+        raise HTTPException(status_code=404, detail="Building not found")
+
+        # Check if the building already has an admin
+    if building_instance.boss_du_id:
+        raise HTTPException(status_code=400, detail=f"Building '{admin.building}' already has an admin")
+    # Create the Admin instance
     new_admin = Admin(
         du_id=admin.du_id,
         name=admin.name,
         email=admin.email,
-        building_name=admin.building_name
+        building=building_instance  # Assign the Building instance here
     )
-
+   
     db.add(new_admin)
     db.commit()
     db.refresh(new_admin)
-    return new_admin
+    return new_admin.du_id
 
 
-# Admin ranks an applicant
+# Admin ranks anapplicant
 @app.post("/admin_rank/")
 def admin_rank(data: AdminRankingCreate, db: Session = Depends(get_db)):
     admin = db.query(Admin).filter(Admin.du_id == data.admin_du_id).first()
     applicant = db.query(Applicant).filter(Applicant.du_id == data.applicant_du_id).first()
 
-    if not admin or not applicant:
+    if not admin or not Applicant:
         raise HTTPException(status_code=404, detail="Admin or applicant not found")
 
     existing_rank = db.query(AdminRanking).filter(
@@ -142,7 +186,7 @@ def admin_rank(data: AdminRankingCreate, db: Session = Depends(get_db)):
         return {"message": f"Updated ranking: {admin.name} now ranked {applicant.name} as #{data.rank}"}
     else:
         ranking = AdminRanking(
-            admin_id=data.admin_du_id,
+            admin_du_id=data.admin_du_id,
             applicant_du_id=data.applicant_du_id,
             rank=data.rank
         )
@@ -151,7 +195,7 @@ def admin_rank(data: AdminRankingCreate, db: Session = Depends(get_db)):
         return {"message": f"{admin.name} ranked {applicant.name} as #{data.rank}"}
 
 @app.get("/admin_rankings_by_admin/{admin_id}")
-def view_admin_rankings(admin_du_id: int, db: Session = Depends(get_db)):
+def view_admin_rankings(admin_du_id: str, db: Session = Depends(get_db)):
     admin = db.query(Admin).filter(Admin.du_id == admin_du_id).first()
     if not admin:
         raise HTTPException(status_code=404, detail="Admin not found")
@@ -166,37 +210,3 @@ def view_admin_rankings(admin_du_id: int, db: Session = Depends(get_db)):
         }
         for r in rankings
     ]
-@app.post("/create_building/", response_model=BuildingRead)
-def create_building(data: BuildingCreate, db: Session = Depends(get_db)):
-    if db.query(Building).filter(Building.name == data.name).first():
-        raise HTTPException(status_code=400, detail="Building already exists")
-    
-    building = Building(
-        name=data.name,
-        ra_needed=data.ra_needed,
-        boss_du_id=data.boss_du_id
-    )
-    if data.boss_du_id:
-        admin = db.query(Admin).filter(Admin.du_id == data.boss_du_id).first()
-        if not admin:
-            raise HTTPException(status_code=404, detail="Admin not found")
-        building.boss = admin
-    else:
-        building.boss = None
-    db.add(building)
-    db.commit()
-    db.refresh(building)
-    return building
-
-@app.get("/buildings/", response_model=List[BuildingRead])
-def get_buildings(db: Session = Depends(get_db)):
-    return db.query(Building).all()
-#-------------------------------RESET DATABASE-----------------------------------
-
-@app.delete("/reset-database/")
-def reset_database():
-    meta = MetaData()
-    meta.reflect(bind=engine)
-    meta.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    return {"message": "Database reset successfully!"}

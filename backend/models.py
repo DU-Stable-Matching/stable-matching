@@ -33,11 +33,9 @@ class Admin(Base):
     name = Column(String)
     email = Column(String, unique=True)
 
-    building_name = Column(String, ForeignKey("buildings.name"))
-    
-    building = relationship("Building", back_populates="admin", foreign_keys=[building_name])
-    # Restore this relationship!
-    rankings = relationship("AdminRanking", back_populates="admin", cascade="all, delete")
+    building = relationship("Building", back_populates="admin", uselist=False)
+    rankings = relationship("AdminRanking", back_populates="admin")  # Add this line
+
 
 
 
@@ -54,11 +52,9 @@ class AdminRanking(Base):
 
 class Building(Base):
     __tablename__ = "buildings"
-
-    id = Column(Integer)
-    name = Column(String, unique=True, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)       # ← must be a primary key!
+    name = Column(String, unique=True, nullable=False)
     ra_needed = Column(Integer)
     boss_du_id = Column(String, ForeignKey("admins.du_id"))
 
-    admin = relationship("Admin", back_populates="building", uselist=False, foreign_keys=[boss_du_id])
-
+    admin = relationship("Admin", back_populates="building")

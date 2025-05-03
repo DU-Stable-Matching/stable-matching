@@ -1,50 +1,67 @@
-import React from "react";
+import React, { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../userState.ts";
 
-const LoginHero = () => {
-  const someFunc = (e: React.FormEvent<HTMLFormElement>) => {
+const LoginScreen: React.FC = () => {
+  const setUserID = useUserStore((s) => s.setUserID);
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("form submitted");
+
+    // 1) set your userID in the store
+    setUserID(1);
+
+    // 2) navigate _after_ your store is updated
+    navigate("/user_pref", { replace: true });
   };
+
   return (
-    <div className="w-full min-h-screen bg-myrtle-green flex items-center justify-center py-28 px-16">
-      {/* white box */}
-      <div className="w-screen flex h-fit border-2 border-white items-center justify-center max-w-7xl ">
-        <div className="flex-col flex-wrap p-12 h-full w-full max-w-6xl">
-          <div className="flex flex-wrap mb-5">
-            <h1 className="text-6xl font-bold mb-4 text-white">
-              Welcome Back! Please Log In
-            </h1>
-            <p className="text-white  leading-7 ">
-              Access your account to connect with potential employers and find
-              the perfect job.
-            </p>
-          </div>
-          <form onSubmit={someFunc}>
+    <div className="min-h-screen flex items-center justify-center bg-periwinkle px-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <h2 className="text-2xl font-bold text-dark-green mb-6 text-center">
+          Log In
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="email" className="block text-dark-green mb-1">
+              Email
+            </label>
             <input
-              className="bg-myrtle-green text-white placeholder-white p-3 text-base leading-7 rounded-lg border-2 mr-4 "
-              type="text"
-              placeholder="Username or Email"
-              name=""
-              id=""
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
             />
-            <button
-              className=" text-black bg-white py-3 px-6 rounded-lg my-4 leading-7"
-              type="submit"
-            >
-              Login
-            </button>
-          </form>
-        </div>
-        <div className="w-full h-full p-3 items-center hidden md:flex max-w-6xl">
-          <img
-            className="w-full h-full"
-            src={require("../assets/img/Welcome_aboard.png")}
-            alt="Welcome aboard"
-          />
-        </div>
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-dark-green mb-1">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-dark-green text-white py-2 rounded-lg font-medium hover:bg-myrtle-green transition-colors"
+          >
+            Login
+          </button>
+        </form>
       </div>
     </div>
   );
 };
 
-export default LoginHero;
+export default LoginScreen;

@@ -20,7 +20,7 @@ class Admin(Base):
     email: Mapped[str]
     password: Mapped[str]
     name: Mapped[str]
-    buildings: Mapped["Building"] = relationship(back_populates="boss")
+    building: Mapped["Building"] = relationship(back_populates="boss")
 
     rankings: Mapped[List["AdminRanking"]] = relationship(
         back_populates="admin", cascade="all, delete-orphan"
@@ -33,8 +33,8 @@ class Building(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
     ra_needed: Mapped[int]
-    boss_id: Mapped[str] = mapped_column(ForeignKey("admins.id"))
-    boss: Mapped["Admin"] = relationship(back_populates="buildings")
+    boss_id: Mapped[str] = mapped_column(ForeignKey("admins.id"), nullable=True)
+    boss: Mapped["Admin"] = relationship(back_populates="building")
 
 
 class AdminRanking(Base):

@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from .database import engine, Base
 from sqlalchemy.exc import SQLAlchemyError
 from .routes import applicant, building, admin
-from .setup_db import seed_initial_buildings
+from ..setup_db import seed_initial_buildings
 
 app = FastAPI()
 

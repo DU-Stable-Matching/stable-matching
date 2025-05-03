@@ -31,7 +31,7 @@ class Building(Base):
     __tablename__ = "buildings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(unique=True)
     ra_needed: Mapped[int]
     boss_id: Mapped[str] = mapped_column(ForeignKey("admins.id"))
     boss: Mapped["Admin"] = relationship(back_populates="buildings")

@@ -1,5 +1,8 @@
 from .database import SessionLocal
 from .models import Admin, Applicant, Building
+from typing import List, Tuple
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
 
 # utils/security.py
 from passlib.hash import bcrypt
@@ -21,36 +24,41 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.verify(plain_password, hashed_password)
 
 
-def get_prefrences():
+def get_preferences():
+    """
+    Returns two lists of preferences:
+      1. Admin preferences as (admin_id, [applicant_id, …])
+      2. Applicant preferences as (applicant_id, [(building_name, boss_id), …])
+    Raises 404 if no admins or no applicants exist.
+    """
     db = SessionLocal()
-    # get all buildings
-    admin = db.query(Admin).all()
-    if not admin:
-        raise Exception(status_code=404, detail="No admins found")
 
-    admin_pref: list = []
+    admins = db.query(Admin).all()
+    if not admins:
+        raise Exception("No admins found")
 
-    for admin in admin:
-        pref = (admin.id, [])
-        for pref in admin.rankings:
-            pref[1].append(pref.applicant_id)
+    admin_pref = []
 
-    # get all applicants
+    for ad in admins:
+        temp = (ad.id, [])
+        ad.rankings.sort(key=lambda x: x.rank)
+        for rank in ad.rankings:
+            temp[1].append(rank.applicant_id)
+
+        admin_pref.append(temp)
+
+    user_pref = []
 
     apps = db.query(Applicant).all()
     if not apps:
-        raise Exception(status_code=404, detail="No applicants found")
-
-    app_pref: list = []
+        raise Exception("No users found")
 
     for app in apps:
-        pref = (app.id, [])
+        temp = (app.id, [])
+        app.preferences.sort(key=lambda x: x.rank)
         for pref in app.preferences:
-            building_name = pref.building_name
-            # get the building id
-            building = db.query(Building).filter(Building.name == building_name).first()
-            boss_id = building.boss_id
-            pref[1].append((building_name, boss_id))
-        app_pref.append(pref)
+            temp[1].append(pref.id)
 
-    return admin_pref, app_pref
+        user_pref.append(temp)
+
+    return admin_pref, user_pref

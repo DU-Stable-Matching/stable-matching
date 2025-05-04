@@ -34,6 +34,14 @@ def get_admin(admin_id: str, db: Session = Depends(get_db)):
 
     return admin_db
 
+@router.get("/admin_given_preferences/{admin_id}")
+def get_admin_given_preferences(admin_id: str, db: Session = Depends(get_db)):
+    admin_db = db.query(Admin).filter(Admin.id == admin_id).first()
+    if not admin_db:
+        raise HTTPException(status_code=404, detail="Admin not found")
+
+    return admin_db.given_preferences
+
 
 @router.get("/get_all_admins/")
 def get_all_admins(db: Session = Depends(get_db)):

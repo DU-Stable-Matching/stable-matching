@@ -13,13 +13,12 @@ const Reast: React.FC = () => {
           </h1>
           <RankForm
             placesList={[
-              'Google',
-              'Amazon',
-              'Microsoft',
-              'Apple',
-              'Meta',
-              'Netflix',
-              'Tesla',
+              'Halls',
+              'Towers',
+              'JMAC',
+              'DFRV',
+              'Nelson/Nagel',
+              'Apartments',
             ]}
           />
         </div>

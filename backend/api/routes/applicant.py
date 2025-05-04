@@ -50,6 +50,8 @@ def apply(data: RAAppCreate, db: Session = Depends(get_db)):
     user.is_returner = data.is_returner
     user.why_ra = data.why_ra
 
+    # Clear existing preferences
+    user.preferences.clear()
     for pref in data.preferences:
         user.preferences.append(
             BuildingPref(building_name=pref.building_name, rank=pref.rank)
@@ -58,9 +60,9 @@ def apply(data: RAAppCreate, db: Session = Depends(get_db)):
     return {"message": "Application submitted!"}
 
 
-@router.post("/upload-resume/{du_id}")
+@router.post("/upload_resume/{id}")
 def upload_resume(
-    du_id: str, resume: UploadFile = File(...), db: Session = Depends(get_db)
+    id: int, resume: UploadFile = File(...), db: Session = Depends(get_db)
 ):
     applicant = db.query(Applicant).filter(Applicant.id == id).first()
     if not applicant:
@@ -69,10 +71,8 @@ def upload_resume(
     if not resume.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDFs allowed.")
 
-    du_id = applicant.du_id
-
     os.makedirs("resumes", exist_ok=True)
-    save_path = f"resumes/{du_id}_{resume.filename}"
+    save_path = f"resumes/{id}_{resume.filename}"
     with open(save_path, "wb") as f:
         f.write(resume.file.read())
 

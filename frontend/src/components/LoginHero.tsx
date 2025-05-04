@@ -28,6 +28,13 @@ const LoginScreen: React.FC = () => {
           ? "http://127.0.0.1:8000/api/login/"
           : "http://127.0.0.1:8000/api/login_admin/";
 
+
+      const prefsUrl =
+        role === "applicant"
+          ? "http://127.0.0.1:8000/api/applicant_given_preferences/"
+          : "http://127.0.1:8000/api/admin_given_preferences/";
+
+
       // 1) Login
       const response = await axios.post(loginUrl, payload, {
         headers: {
@@ -40,27 +47,34 @@ const LoginScreen: React.FC = () => {
       // 2) Common setup
       setUserID(response.data.id);
     
+    
+      setUserEmail(response.data.email);
+      
+      
+      // 3) Check if they've given prefs
+      const { data: hasGivenPrefs } = await axios.get<boolean>(
+        prefsUrl+response.data.id,
+      );
+      
+      // after you’ve fetched hasGivenPrefs...
+      setGivePrefs(hasGivenPrefs);
+      console.log("Has given preferences:", hasGivenPrefs);
+
       if (role === "applicant") {
-        setUserEmail(response.data.email);
-        
-        
-        // 3) Check if they've given prefs
-        const { data: hasGivenPrefs } = await axios.get<boolean>(
-          `http://127.0.0.1:8000/api/applicant_given_preferences/${response.data.id}`,
-        );
-
-        // 4) Store that boolean
-        setGivePrefs(hasGivenPrefs);
-
-        // 5) Navigate
-        navigate(
-          hasGivenPrefs ? "/dashboard" : "/user_pref",
-          { replace: true }
-        );
-      } else {
-        // admin
-        navigate("/admin_pref", { replace: true });
+        if (hasGivenPrefs) {
+          navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/user_pref", { replace: true });
+        }
+      } else if (role === "admin") {
+        if (hasGivenPrefs) {
+          navigate("/admin_dashboard", { replace: true });
+        } else {
+          navigate("/admin_pref", { replace: true });
+        }
       }
+
+      
     } catch (err: any) {
       console.error("Login error:", err);
       if (err.response?.status === 401) {

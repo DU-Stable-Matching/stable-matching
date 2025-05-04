@@ -99,7 +99,7 @@ def all_applicants_with_preferences(db: Session = Depends(get_db)):
 
 
 @router.get("/applicant_given_preferences/{applicant_id}")
-def get_applicant_given_preferences(applicant_id: str, db: Session = Depends(get_db)):
+def get_applicant_given_preferences(applicant_id: int, db: Session = Depends(get_db)):
     applicant = db.query(Applicant).filter(Applicant.id == applicant_id).first()
     if not applicant:
         raise HTTPException(status_code=404, detail="Applicant not found")

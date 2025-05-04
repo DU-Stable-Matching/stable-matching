@@ -34,6 +34,7 @@ def get_admin(admin_id: str, db: Session = Depends(get_db)):
 
     return admin_db
 
+
 @router.get("/admin_given_preferences/{admin_id}")
 def get_admin_given_preferences(admin_id: str, db: Session = Depends(get_db)):
     admin_db = db.query(Admin).filter(Admin.id == admin_id).first()
@@ -58,13 +59,22 @@ def admin_rank(data: AdminRankingCreate, db: Session = Depends(get_db)):
     if not admin:
         raise HTTPException(status_code=404, detail="Admin not found")
 
-    admin.rankings.append(
-        (AdminRanking(applicant_id=data.applicant_id, rank=data.rank))
-    )
+    # Clear existing rankings
+    db.query(AdminRanking).filter(AdminRanking.admin_id == data.admin_id).delete()
+
+    for ranking in data.list_of_rankings:
+        applicant = (
+            db.query(Applicant).filter(Applicant.name == ranking.applicant_name).first()
+        )
+        new_ranking = AdminRanking(
+            applicant_id=applicant.id,
+            rank=ranking.rank,
+            admin_id=data.admin_id,
+        )
+        db.add(new_ranking)
+
     db.commit()
-    return {
-        "message": f"Admin {admin.name} ranked applicant {data.applicant_id} as #{data.rank}"
-    }
+    return {"message": "Rankings submitted successfully!"}
 
 
 @router.get("/admin_rankings_by_admin/{admin_du_id}")

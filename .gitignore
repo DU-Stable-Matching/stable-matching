@@ -48,3 +48,7 @@ __pycache__/
 
 
 resumes
+
+backend/api/__pycache__/utlils.cpython-312.pyc
+backend/api/routes/__pycache__/admin.cpython-312.pyc
+backend/api/routes/__pycache__/algorithm.cpython-312.pyc

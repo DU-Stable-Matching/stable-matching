@@ -45,7 +45,7 @@ def get_admin_given_preferences(admin_id: str, db: Session = Depends(get_db)):
 
 @router.get("/get_all_admins/")
 def get_all_admins(db: Session = Depends(get_db)):
-    admins = db.query(Admin).options(joinedload(Admin.buildings)).all()
+    admins = db.query(Admin).options(joinedload(Admin.building)).all()
     if not admins:
         raise HTTPException(status_code=404, detail="No admins found")
 

@@ -10,7 +10,10 @@ import { useUserStore } from './userState.ts';
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const userID = useUserStore(state => state.userID);
-  return userID ? children : <Navigate to="/login" replace />;
+  if (userID === null) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
 };
 
 function App() {

@@ -1,10 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from .database import engine, Base
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
-from .routes import applicant, building, admin,algorithm
+from .routes import applicant, building, admin, algorithm
 
 
 app = FastAPI()
+
+# Enable CORS for any endpoint
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Include the user routes
 app.include_router(applicant.router, prefix="/api", tags=["user"])

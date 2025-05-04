@@ -1,4 +1,4 @@
-import React, { useState, useRef, DragEvent, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useRef, DragEvent, ChangeEvent } from 'react';
 
 interface ResumeUploadProps {
   onUpload?: (file: File) => Promise<void> | void;
@@ -7,12 +7,18 @@ interface ResumeUploadProps {
 const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>('');
+  const [uploaded, setUploaded] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = (files: FileList | null) => {
+    if (uploaded) return;                // already done
     if (files && files.length > 0) {
       const chosen = files[0];
-      const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const allowed = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
       if (!allowed.includes(chosen.type)) {
         setError('Only PDF or Word documents are allowed.');
         return;
@@ -26,6 +32,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
     e.preventDefault();
     handleFiles(e.dataTransfer.files);
   };
+
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
@@ -35,70 +42,77 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
   };
 
   const handleClear = () => {
+    if (uploaded) return;                // cannot clear once uploaded
     setFile(null);
     setError('');
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleUploadClick = async () => {
     if (!file) {
       setError('Please select a file first.');
       return;
     }
     try {
       await onUpload?.(file);
-      // or handle upload here
-      console.log('Uploading file:', file);
+      setUploaded(true);
     } catch (err) {
       setError('Upload failed. Please try again.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto space-y-4">
+    <div className="w-full max-w-lg mx-auto space-y-4">
       <label className="block text-sm font-medium text-gray-700">
-        Upload Your Resume
+        {uploaded ? 'Resume Uploaded' : 'Upload Your Resume'}
       </label>
 
       <div
         onDrop={onDrop}
         onDragOver={onDragOver}
-        onClick={() => inputRef.current?.click()}
-        className={`relative cursor-pointer rounded-lg border-2 ${
-          error ? 'border-red-500' : 'border-dashed border-gray-300'
-        } p-6 flex flex-col items-center justify-center hover:bg-gray-50 transition`}
+        onClick={() => !uploaded && inputRef.current?.click()}
+        className={`
+          relative cursor-pointer rounded-lg border-2 p-6 flex flex-col items-center justify-center transition
+          ${error 
+            ? 'border-red-500' 
+            : uploaded
+              ? 'border-green-500 bg-green-50 pointer-events-none opacity-70'
+              : 'border-dashed border-gray-300 hover:bg-gray-50'}
+        `}
       >
         <input
           ref={inputRef}
           type="file"
+          name="resume"
           accept=".pdf,.doc,.docx"
+          multiple={false}
+          disabled={uploaded}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           onChange={handleChange}
         />
+
         <svg
           className="w-12 h-12 text-gray-400 mb-3"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M12 4v16m8-8H4"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+            d="M12 4v16m8-8H4" />
         </svg>
+
         {file ? (
           <p className="text-gray-700">{file.name}</p>
         ) : (
           <p className="text-gray-500">
-            Drag & drop or click to browse (PDF, DOC, DOCX)
+            {uploaded
+              ? 'Your resume has been uploaded.'
+              : 'Drag & drop or click to browse (PDF, DOC, DOCX)'}
           </p>
         )}
       </div>
 
-      {file && (
+      {!uploaded && file && (
         <div className="flex items-center justify-between">
           <button
             type="button"
@@ -108,7 +122,8 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
             Remove file
           </button>
           <button
-            type="submit"
+            type="button"
+            onClick={handleUploadClick}
             className="bg-dark-green text-white px-4 py-2 rounded-lg font-medium hover:bg-myrtle-green transition"
           >
             Upload
@@ -117,7 +132,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
       )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
-    </form>
+    </div>
   );
 };
 

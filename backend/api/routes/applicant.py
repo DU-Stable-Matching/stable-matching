@@ -29,14 +29,15 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login/")
 def login(user: UserLogin, db: Session = Depends(get_db)):
+    print(user)
     db_user = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
 
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
-
+    print("done")
     if not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-
+    print("done2")
     return {"message": "Login successful!", "id": db_user.id}
 
 
@@ -95,3 +96,12 @@ def all_applicants_with_preferences(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No applicants found")
 
     return applicants
+
+
+@router.get("/applicant_given_preferences/{applicant_id}")
+def get_applicant_given_preferences(applicant_id: str, db: Session = Depends(get_db)):
+    applicant = db.query(Applicant).filter(Applicant.id == applicant_id).first()
+    if not applicant:
+        raise HTTPException(status_code=404, detail="Applicant not found")
+
+    return applicant.given_preferences

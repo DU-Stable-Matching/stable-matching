@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, use } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../userState.ts";
 import axios from "axios";
@@ -7,6 +7,7 @@ const LoginScreen: React.FC = () => {
   const setUserID        = useUserStore((s) => s.setUserID);
   const setUserEmail     = useUserStore((s) => s.setEmail);
   const setGivePrefs     = useUserStore((s) => s.setGivePrefrences);
+  const userID           = useUserStore(state => state.userID);
   const navigate         = useNavigate();
 
   const [duId, setDuId]         = useState("");
@@ -35,15 +36,17 @@ const LoginScreen: React.FC = () => {
         },
       });
 
+      console.log("Login response:", response.data);
       // 2) Common setup
-      setUserID(response.data.user_id);
-
+      setUserID(response.data.id);
+    
       if (role === "applicant") {
         setUserEmail(response.data.email);
-
+        
+        
         // 3) Check if they've given prefs
         const { data: hasGivenPrefs } = await axios.get<boolean>(
-          `http://127.0.0.1:8000/api/given_pref/${response.data.user_id}`
+          `http://127.0.0.1:8000/api/applicant_given_preferences/${response.data.id}`,
         );
 
         // 4) Store that boolean

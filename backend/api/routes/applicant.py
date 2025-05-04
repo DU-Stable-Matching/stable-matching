@@ -24,12 +24,17 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"message": "User created successfully!", "id": new_user.id}
+    return {
+        "message": "User created successfully!",
+        "id": new_user.id,
+        "email": new_user.email,
+    }
 
 
 @router.post("/login/")
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
+
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
 

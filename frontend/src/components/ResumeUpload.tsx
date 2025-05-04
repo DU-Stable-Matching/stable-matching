@@ -1,4 +1,4 @@
-import React, { useState, useRef, DragEvent, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useRef, DragEvent, ChangeEvent } from 'react';
 
 interface ResumeUploadProps {
   onUpload?: (file: File) => Promise<void> | void;
@@ -26,6 +26,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
     e.preventDefault();
     handleFiles(e.dataTransfer.files);
   };
+  
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
@@ -40,8 +41,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleUploadClick = async () => {
     if (!file) {
       setError('Please select a file first.');
       return;
@@ -56,7 +56,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto space-y-4">
+    <div className="w-full max-w-lg mx-auto space-y-4">
       <label className="block text-sm font-medium text-gray-700">
         Upload Your Resume
       </label>
@@ -72,6 +72,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
         <input
           ref={inputRef}
           type="file"
+          name="resume"
           accept=".pdf,.doc,.docx"
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           onChange={handleChange}
@@ -108,7 +109,8 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
             Remove file
           </button>
           <button
-            type="submit"
+            type="button"
+            onClick={handleUploadClick}
             className="bg-dark-green text-white px-4 py-2 rounded-lg font-medium hover:bg-myrtle-green transition"
           >
             Upload
@@ -117,7 +119,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
       )}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
-    </form>
+    </div>
   );
 };
 

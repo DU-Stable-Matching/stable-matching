@@ -87,6 +87,13 @@ def get_applicant(du_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Not found")
     return user
 
+@router.get("/applicant_given_preferences/{id}")
+def get_applicant_given_preferences(id: str, db: Session = Depends(get_db)):
+    applicant = db.query(Applicant).filter(Applicant.id == id).first()
+    if not applicant:
+        raise HTTPException(status_code=404, detail="Applicant not found")
+
+    return applicant.given_preferences
 
 @router.get("/get_all_applicants/")
 def all_applicants_with_preferences(db: Session = Depends(get_db)):

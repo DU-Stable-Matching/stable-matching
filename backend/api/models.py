@@ -21,6 +21,7 @@ class Admin(Base):
     password: Mapped[str]
     name: Mapped[str]
     building: Mapped["Building"] = relationship(back_populates="boss")
+    given_preferences: Mapped[bool] = mapped_column(default=False)
 
     rankings: Mapped[List["AdminRanking"]] = relationship(
         back_populates="admin", cascade="all, delete-orphan"
@@ -62,6 +63,8 @@ class Applicant(Base):
     preferences: Mapped[List["BuildingPref"]] = relationship(
         back_populates="applicant", cascade="all, delete-orphan"
     )
+    given_preferences: Mapped[bool] = mapped_column(default=False)
+
 
 
 class BuildingPref(Base):

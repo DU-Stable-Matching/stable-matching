@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 
+
 # ----------------------------------ADMIN SCHEMAS--------------------------------
 class AdminLogin(BaseModel):
     du_id: str
@@ -8,10 +9,14 @@ class AdminLogin(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AdminPref(BaseModel):
+    applicant_name: str
+    rank: int
+
+
 class AdminRankingCreate(BaseModel):
     admin_id: int
-    applicant_id: int
-    rank: int
+    list_of_rankings: List[AdminPref]
 
 
 class BuildingCreate(BaseModel):

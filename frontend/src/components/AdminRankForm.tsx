@@ -31,7 +31,7 @@ const DraggableRankingCards: React.FC<RankFormProps> = ({ nameList }) => {
 
     try {
       await axios.post('http://127.0.0.1:8000/api/admin_rank/', payload);
-      navigate('/dashboard');
+      navigate('/admin_dashboard');
     } catch (err: any) {
       console.error('Submit failed:', err);
       setError('Submission failed. Please try again later.');

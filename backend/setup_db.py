@@ -86,6 +86,8 @@ def db_setup_admin(buidling_ids: list[int]):
                     email=admin["email"],
                     password=get_password_hash(admin["password"]),
                     building=building,
+                    given_preferences=False,
+                    rankings=[]
                 )
             )
             db.add(admins[-1])
@@ -120,9 +122,9 @@ def setup_database_building():
         initial_buildings = [
             {"name": "Halls", "ra_needed": 1},
             {"name": "Towers", "ra_needed": 1},
-            {"name": "Jmac", "ra_needed": 1},
-            {"name": "Damount", "ra_needed": 1},
-            {"name": "Nelson/Nager", "ra_needed": 1},
+            {"name": "JMAC", "ra_needed": 1},
+            {"name": "DFRV", "ra_needed": 1},
+            {"name": "Nelson/Nagel", "ra_needed": 1},
             {"name": "Apartments", "ra_needed": 1},
         ]
 

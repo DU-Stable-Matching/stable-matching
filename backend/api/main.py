@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from .database import engine, Base
 from sqlalchemy.exc import SQLAlchemyError
-from .routes import applicant, building, admin
-from fastapi.middleware.cors import CORSMiddleware
+from .routes import applicant, building, admin, algorithm
+
 
 app = FastAPI()
 
@@ -19,6 +19,7 @@ app.add_middleware(
 app.include_router(applicant.router, prefix="/api", tags=["user"])
 app.include_router(building.router, prefix="/api", tags=["building"])
 app.include_router(admin.router, prefix="/api", tags=["admin"])
+app.include_router(algorithm.router, prefix="/api", tags=["algorithm"])
 
 
 @app.delete("/reset-database/")

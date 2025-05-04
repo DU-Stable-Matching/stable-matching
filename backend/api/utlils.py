@@ -60,5 +60,8 @@ def get_preferences():
             temp[1].append(pref.id)
 
         user_pref.append(temp)
+    if len(user_pref) > len(admin_pref):
+
+        user_pref =  user_pref[: len(admin_pref)]
 
     return admin_pref, user_pref

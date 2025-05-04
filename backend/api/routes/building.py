@@ -15,8 +15,7 @@ def get_buildings(db: Session = Depends(get_db)):
             {
                 "id": building.id,
                 "name": building.name,
-                "ra_needed": building.ra_needed,
-                "boss_du_id": building.boss_du_id,
+                "ra_needed": building.ra_needed
             }
         )
     return result

@@ -24,11 +24,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {
-        "message": "User created successfully!",
-        "id": new_user.id,
-        "email": new_user.email,
-    }
+    return {"message": "User created successfully!", "id": new_user.id}
 
 
 @router.post("/login/")

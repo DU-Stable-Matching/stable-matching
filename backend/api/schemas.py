@@ -1,7 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 
-
 # ----------------------------------ADMIN SCHEMAS--------------------------------
 class AdminLogin(BaseModel):
     du_id: str

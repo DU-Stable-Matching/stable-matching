@@ -6,6 +6,7 @@ import Pref from './pages/Pref.tsx';
 import Login from './pages/Login.tsx';
 import SignUp from './pages/SignUp.tsx';
 import DashBoard from './pages/DashBoard.tsx';
+import AdminPref from './pages/AdminPref.tsx';
 import { useUserStore } from './userState.ts';
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -24,6 +25,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashBoard /></ProtectedRoute>} />
       <Route path="/user_pref" element={<ProtectedRoute><Pref /></ProtectedRoute>} />
+      <Route path="/admin_pref" element={<ProtectedRoute><AdminPref /></ProtectedRoute>} />
     </Routes>
   );
 }

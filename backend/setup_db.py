@@ -1,4 +1,4 @@
-from api.models import Building, Admin, Applicant, AdminRanking
+from api.models import Building, Admin, Applicant, AdminRanking, BuildingPref
 from api.utlils import get_password_hash
 from api.database import SessionLocal
 import logging
@@ -185,7 +185,7 @@ def db_setup_applicants():
 def setup_admin_rankings():
     db = SessionLocal()
     logger.info("🚀 Starting admin rankings setup.")
-    for i in range(1, 5):
+    for i in range(1, 6):
         admin = db.query(Admin).filter(Admin.id == i).first()
         # random rankings from 1 to 6
         ranks = [i for i in range(1, 7)]
@@ -205,6 +205,36 @@ def setup_admin_rankings():
             logger.info(
                 f"✅ Admin {admin.name} ranked applicant {applicant.name} with rank {rank}."
             )
+        admin.given_preferences = True
+    db.commit()
+    logger.info("✅ All rankings committed to the database.")
+    db.close()
+
+
+def setup_applicant_rankings():
+    db = SessionLocal()
+    logger.info("🚀 Starting applicant rankings setup.")
+    for i in range(1, 6):
+        applicant = db.query(Applicant).filter(Applicant.id == i).first()
+        # random rankings from 1 to 6
+        ranks = [i for i in range(1, 7)]
+        random.shuffle(ranks)
+        for j, rank in enumerate(ranks):
+            building = db.query(Building).filter(Building.id == j + 1).first()
+            if not building:
+                logger.warning(f"⚠️ No building found for ID {j + 1}. Skipping.")
+                continue
+
+            building_pref = BuildingPref(
+                building_name=building.name,
+                rank=rank,
+                applicant_id=applicant.id,
+            )
+            db.add(building_pref)
+            logger.info(
+                f"✅ Applicant {applicant.name} ranked building {building.name} with rank {rank}."
+            )
+        applicant.given_preferences = True
     db.commit()
     logger.info("✅ All rankings committed to the database.")
     db.close()
@@ -215,6 +245,7 @@ def main():
     db_setup_admin(building_ids)
     db_setup_applicants()
     setup_admin_rankings()
+    setup_applicant_rankings()
     logger.info("🎉 Full database setup completed.")
 
 

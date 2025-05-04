@@ -63,3 +63,20 @@ class RAAppCreate(BaseModel):
     is_returner: bool
     why_ra: str
     preferences: List[BuildingPref]
+
+
+class matchApplicant(BaseModel):
+    name: str
+    email: str
+    year_in_college: Optional[int] = None
+    is_returner: Optional[bool] = None
+    why_ra: Optional[str] = None
+    resume_path: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class matchBuilding(BaseModel):
+    name: str
+    ra_needed: int
+    admin_name: str
+    model_config = ConfigDict(from_attributes=True)

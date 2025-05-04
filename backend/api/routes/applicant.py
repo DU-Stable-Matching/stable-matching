@@ -1,3 +1,4 @@
+from fastapi.responses import FileResponse
 from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
 from ..models import Applicant, BuildingPref
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
@@ -34,10 +35,11 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
 
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    print("done")
+    print("done1")
     if not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     print("done2")
+
     return {"message": "Login successful!", "id": db_user.id}
 
 
@@ -56,6 +58,8 @@ def apply(data: RAAppCreate, db: Session = Depends(get_db)):
         user.preferences.append(
             BuildingPref(building_name=pref.building_name, rank=pref.rank)
         )
+    user.given_preferences = True
+
     db.commit()
     return {"message": "Application submitted!"}
 
@@ -76,7 +80,7 @@ def upload_resume(
     with open(save_path, "wb") as f:
         f.write(resume.file.read())
 
-    applicant.resume_path = save_path
+    applicant.resume_path = f"{id}_{resume.filename}"
     db.commit()
     return {"message": "Resume uploaded!", "path": save_path}
 
@@ -105,3 +109,13 @@ def get_applicant_given_preferences(applicant_id: int, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Applicant not found")
 
     return applicant.given_preferences
+
+
+@router.get("/applicant/resume/{path}")
+def get_applicant_resume(path: str):
+    path = os.path.join("resumes", path)
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="Resume not found")
+    return FileResponse(
+        path, media_type="application/pdf", filename=os.path.basename(path)
+    )

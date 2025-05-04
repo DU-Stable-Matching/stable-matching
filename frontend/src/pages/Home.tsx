@@ -11,10 +11,6 @@ const Home = () => {
     <>
       <TopBar/>
       <Hero/>
-      {/* side project not startup so don't care about there componenets */}
-      {/* <AboutUs/>
-      <SignUpSlice/>
-      <Footer/> */}
     </>
   )
 }

@@ -11,7 +11,9 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFiles = (files: FileList | null) => {
-    if (uploaded) return;                // already done
+    console.log('Files:', files);
+    if (uploaded) return;     
+    console.log("attempt")           // already done
     if (files && files.length > 0) {
       const chosen = files[0];
       const allowed = [
@@ -23,6 +25,7 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
         setError('Only PDF or Word documents are allowed.');
         return;
       }
+      console.log('File:', chosen);
       setError('');
       setFile(chosen);
     }

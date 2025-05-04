@@ -63,7 +63,7 @@ def run_algorithm(user_id: int, db: Session = Depends(get_db)):
         )
 
     for i in range(len(admin_pref)):
-        if len(admin_pref[i][1]) == 0:
+        if len(admin_pref[i][1]) == 0 or len(user_pref[i][1]) == 0:
             raise HTTPException(
                 status_code=400,
                 detail=f"Admin admin_pref[{i}][0] hasn't provided ranking.",
@@ -114,7 +114,7 @@ def run_algorithm(admin_id: int, db: Session = Depends(get_db)):
         )
 
     for i in range(len(admin_pref)):
-        if len(admin_pref[i][1]) == 0:
+        if len(admin_pref[i][1]) == 0 or len(user_pref[i][1]) == 0:
             raise HTTPException(
                 status_code=400,
                 detail=f"Admin admin_pref[{i}][0] hasn't provided ranking.",

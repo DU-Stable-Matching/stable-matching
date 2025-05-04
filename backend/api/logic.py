@@ -81,8 +81,7 @@ class Applicants:
         return str_to_return
 
 def get_matching(a, b): 
-    buildings = Buildings(b) 
-    
+    buildings = Buildings(b)
     applicants = Applicants(a) 
     free_buildings = buildings.free_buildings()
     

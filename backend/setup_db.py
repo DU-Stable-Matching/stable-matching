@@ -1,6 +1,7 @@
 from api.models import Building, Admin, Applicant, AdminRanking, BuildingPref
 from api.utlils import get_password_hash
 from api.database import SessionLocal
+import os
 import logging
 import random
 
@@ -118,42 +119,42 @@ def db_setup_applicants():
     initial_applicants = [
         {
             "du_id": "student1",
-            "name": "Alice Applicant",
+            "name": "Alice One",
             "email": "alice@applicant.com",
             "password": "pass1",
             "year_in_college": 1,
         },
         {
             "du_id": "student2",
-            "name": "Bob Candidate",
+            "name": "Bob Two",
             "email": "bob@candidate.edu",
             "password": "pass2",
             "year_in_college": 2,
         },
         {
             "du_id": "student3",
-            "name": "Carol Student",
-            "email": "carol@student.du.edu",
+            "name": "Carol Three",
+            "email": "carol@student.edu",
             "password": "pass3",
             "year_in_college": 3,
         },
         {
             "du_id": "student4",
-            "name": "Dave Learner",
-            "email": "dave@learner.edu",
+            "name": "Dave Four",
+            "email": "dave@student.edu",
             "password": "pass4",
             "year_in_college": 4,
         },
         {
             "du_id": "student5",
-            "name": "Eve Enrollee",
-            "email": "eve@enrollee.edu",
+            "name": "Eve Five",
+            "email": "eve@student.edu",
             "password": "pass5",
             "year_in_college": 1,
         },
         {
             "du_id": "student6",
-            "name": "Frank Freshman",
+            "name": "Frank Six",
             "email": "frank@freshman.edu",
             "password": "pass6",
             "year_in_college": 2,
@@ -172,7 +173,9 @@ def db_setup_applicants():
             password=get_password_hash(app_data["password"]),
             year_in_college=app_data["year_in_college"],
             given_preferences=False,
+            resume_path= f"{app_data['du_id']}.pdf"
         )
+        print(f"Resume path: {applicant.resume_path}"),
         db.add(applicant)
         logger.info(f"✅ Applicant {applicant.name} added successfully.")
 

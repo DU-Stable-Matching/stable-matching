@@ -2,11 +2,9 @@ from fastapi import APIRouter, HTTPException
 from ..utlils import get_preferences
 from ..logic import get_matching
 
-
-
 router = APIRouter()
 
-@router.get("/algorithm/")
+@router.get("/user_algorithm/{user_id}", response_model=dict)
 def run_algorithm():
     # Fetch preferences from the database
     try:

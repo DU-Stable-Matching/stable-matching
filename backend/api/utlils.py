@@ -43,8 +43,9 @@ def get_preferences():
         temp = (ad.id, [])
         ad.rankings.sort(key=lambda x: x.rank)
         for rank in ad.rankings:
+    
             temp[1].append(rank.applicant_id)
-
+        
         admin_pref.append(temp)
 
     user_pref = []
@@ -57,11 +58,11 @@ def get_preferences():
         temp = (app.id, [])
         app.preferences.sort(key=lambda x: x.rank)
         for pref in app.preferences:
-            temp[1].append(pref.id)
-
+            building =  db.query(Building).filter(Building.name == pref.building_name).first()
+            temp[1].append(building.id)
         user_pref.append(temp)
-    if len(user_pref) > len(admin_pref):
+    # if len(user_pref) > len(admin_pref):
 
-        user_pref =  user_pref[: len(admin_pref)]
+    #     user_pref =  user_pref[: len(admin_pref)]
 
-    return admin_pref, user_pref
+    return user_pref, admin_pref

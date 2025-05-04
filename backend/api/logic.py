@@ -108,5 +108,4 @@ def get_matching(a, b):
                 #print(f"RA {possible_ra.applicant_id} rejected Building {proposing_building.building_id} and is still matched with Building {possible_ra.matched_with}")
     # #print the matchings 
     return applicants.matchings()
-    for applicant in matching:
-        print(f"Applicant {applicant[0]} is matched with Building {applicant[1]}")
+   

@@ -36,6 +36,11 @@ yarn-error.log*
 *.sqlite
 *.sqlite3
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+
 # Add this line to your .gitignore file
 __pycache__/
 *.py[cod]

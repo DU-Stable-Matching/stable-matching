@@ -75,3 +75,13 @@ class BuildingPref(Base):
     rank: Mapped[int]
     applicant_id: Mapped[int] = mapped_column(ForeignKey("applicants.id"))
     applicant: Mapped["Applicant"] = relationship(back_populates="preferences")
+
+class FinalMatching(Base):
+    __tablename__ = "final_matching"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    applicant_id: Mapped[int] = mapped_column(ForeignKey("applicants.id"))
+    building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id"))
+
+    # applicant: Mapped["Applicant"] = relationship(back_populates="preferences")
+    # building: Mapped["Building"] = relationship(back_populates="id")

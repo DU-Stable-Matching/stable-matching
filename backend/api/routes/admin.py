@@ -73,6 +73,8 @@ def admin_rank(data: AdminRankingCreate, db: Session = Depends(get_db)):
         )
         db.add(new_ranking)
 
+    admin.given_preferences = True
+
     db.commit()
     return {"message": "Rankings submitted successfully!"}
 

@@ -26,7 +26,7 @@ const LoginScreen: React.FC = () => {
       const loginUrl =
         role === "applicant"
           ? "http://127.0.0.1:8000/api/login/"
-          : "http://127.0.0.1:8000/api/login_admin/";
+          : "http://127.0.0.1:8000/api/admin_login/";
 
 
       const prefsUrl =

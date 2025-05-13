@@ -38,7 +38,7 @@ class RA:
 
     def set_matched(self, matched):
         # Method to set the matched building
-        self.matched_with = matched.building_id
+        self.matched_with = matched
         self.free = False
 
 
@@ -51,7 +51,7 @@ class RA:
 
     def preferred_building(self, other_building):
         # Method to check if the applicant prefers the other building
-        return self.inverse[(other_building.building_id)-1] < self.inverse[(self.matched_with)-1]
+        return self.inverse[(other_building.building_id[0])-1] < self.inverse[(self.matched_with.building_id[0])-1]
     
     def __str__(self):
         return f"RA: {self.applicant_id}" 
@@ -71,7 +71,7 @@ class Applicants:
     def matchings(self):
         matching = []
         for applicant in self.applicants.values():
-            matching.append((applicant.applicant_id, applicant.matched_with))
+            matching.append((applicant.applicant_id, applicant.matched_with.building_id[0]))
         return matching
     
     def __str__(self):
@@ -82,11 +82,12 @@ class Applicants:
 
 def get_matching(a, b): 
     buildings = Buildings(b)
+    print(buildings)
     applicants = Applicants(a) 
     free_buildings = buildings.free_buildings()
     
     while len(free_buildings) > 0:
-        proposing_dorm = buildings.get(free_buildings.pop(0))
+        proposing_dorm = buildings.get(free_buildings.pop(0)) #object
         # print(proposing_dorm, end=" ")
         possible_ra = applicants.get(proposing_dorm.ra_ranks[proposing_dorm.count])
         # print(possible_ra)
@@ -99,7 +100,7 @@ def get_matching(a, b):
             if possible_ra.preferred_building(proposing_dorm):
                 dumped_building = possible_ra.matched_with 
                 possible_ra.set_matched(proposing_dorm)
-                free_buildings.append(dumped_building)
+                free_buildings.append(dumped_building.building_id)
                 #print(f"RA {possible_ra.applicant_id} dumped Building {dumped_building} for Building {proposing_building.building_id}")
             else: 
                 proposing_dorm.count += 1
@@ -109,18 +110,25 @@ def get_matching(a, b):
     return applicants.matchings()
 
 if __name__ == "__main__":
-    building_preferences = [
-        [1, [2, 1, 3]],
-        [2, [1, 2, 3]],
-        [3, [2, 1, 3]]
+    # Example usage
+    # have building 1 have 4 copies (meaning it needs 4 RAs) and building 2 to have 3 copies (meaning it needs 3 RAs)
+    # (building_id, building_copy) 
+    b = [
+        [(1,1), [1, 5, 6, 7, 3, 2, 4]],
+        [(1,2), [1, 5, 6, 7, 3, 2, 4]],
+        [(1,3), [1, 5, 6, 7, 3, 2, 4]],
+        [(1,4), [1, 5, 6, 7, 3, 2, 4]],
+        [(2,1), [2, 1, 3, 6, 4, 5, 7]],
+        [(2,2), [2, 1, 3, 6, 4, 5, 7]],
+        [(2,3), [2, 1, 3, 6, 4, 5, 7]],
     ]
-    
-    applicant_preferences = [
-        [1, [2, 1, 3]],
-        [2, [1, 2, 3]],
-        [3, [2, 1, 3]]
+    a = [
+        [1, [1, 2]],
+        [2, [2, 1]],
+        [3, [2, 1]],
+        [4, [2, 1]],
+        [5, [1, 2]],
+        [6, [2,1]],
+        [7, [1,2]],
     ]
-    
-    print(get_matching(applicant_preferences, building_preferences))
-
-   
+    print(get_matching(a,b)) #applicant id, building id

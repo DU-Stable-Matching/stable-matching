@@ -1,4 +1,5 @@
 import React from 'react';
+import Inspect from "../assets/img/inspect_img.png"
 
 const AboutUs: React.FC = () => (
     <>
@@ -13,7 +14,7 @@ const AboutUs: React.FC = () => (
                 </p>
             </div>
             <div className="w-[70%] items-center hidden md:flex justify-center">
-                <img src={require("../assets/img/inspect_img.png")} alt="inspect" />
+                <img src={Inspect} alt="inspect" />
             </div>
         </div>
     </>

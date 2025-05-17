@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Home from '../assets/img/home_img.png';
 
 const Hero = () => {
   return (
@@ -20,7 +21,7 @@ const Hero = () => {
           </div>
         </div>
         <div className="w-[40%] items-center hidden md:flex">
-          <img className="w-full" src={require("../assets/img/home_img.png")} alt="Home" />
+          <img className="w-full" src={Home} alt="Home" />
         </div>
       </div>
     </div>

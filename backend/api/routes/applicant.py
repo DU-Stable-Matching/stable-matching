@@ -1,77 +1,75 @@
 from fastapi.responses import FileResponse
-from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
-from ..models import Applicant, BuildingPref
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from sqlalchemy.orm import Session, joinedload
-from ..utlils import get_db, get_password_hash, verify_password
+from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
+from ..models import Applicant  # your Pydantic/ORM model used for validating inserts
+from ..utlils import get_password_hash, verify_password
+from ..mongo import get_db
+from bson import ObjectId
 import os
 
 router = APIRouter()
 
 
 @router.post("/create_applicant/")
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
+def create_user(user: UserCreate, db=Depends(get_db)):
+    applicants = db["applicants"]
+    existing = applicants.find_one({"du_id": user.du_id})
     if existing:
         raise HTTPException(status_code=400, detail="DU ID already exists.")
 
+    # find max applicant_id in applicants collection
+    max_doc = applicants.find_one({}, sort=[("applicant_id", -1)])
+    next_id = (max_doc["applicant_id"] + 1) if max_doc else 1
+
     new_user = Applicant(
+        applicant_id=next_id,
         du_id=user.du_id,
         name=user.name,
         email=user.email,
         password=get_password_hash(user.password),
         year_in_college=user.year_in_college,
     )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "User created successfully!", "id": new_user.id}
+    applicants.insert_one(new_user.model_dump())
+    return {"message": "User created successfully!", "id": new_user.applicant_id}
 
 
 @router.post("/login/")
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    print(user)
-    db_user = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
-
-    if not db_user:
+def login(user: UserLogin, db=Depends(get_db)):
+    applicants = db["applicants"]
+    db_user = applicants.find_one({"du_id": user.du_id})
+    if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    print("done1")
-    if not verify_password(user.password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-    print("done2")
-
-    return {"message": "Login successful!", "id": db_user.id}
+    return {"message": "Login successful!", "id": db_user["applicant_id"]}
 
 
 @router.post("/apply/")
-def apply(data: RAAppCreate, db: Session = Depends(get_db)):
-    user = db.query(Applicant).filter(Applicant.id == data.id).first()
+def apply(data: RAAppCreate, db=Depends(get_db)):
+    applicants = db["applicants"]
+    user = applicants.find_one({"applicant_id": data.id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user.is_returner = data.is_returner
-    user.why_ra = data.why_ra
-
-    # Clear existing preferences
-    user.preferences.clear()
-    for pref in data.preferences:
-        user.preferences.append(
-            BuildingPref(building_name=pref.building_name, rank=pref.rank)
-        )
-    user.given_preferences = True
-
-    db.commit()
+    update_fields = {
+        "is_returner": data.is_returner,
+        "why_ra": data.why_ra,
+        "preferences": [pref.model_dump() for pref in data.preferences],
+        "given_preferences": True,
+    }
+    applicants.update_one(
+        {"_id": user["_id"]},
+        {"$set": update_fields}
+    )
     return {"message": "Application submitted!"}
 
 
 @router.post("/upload_resume/{id}")
 def upload_resume(
-    id: int, resume: UploadFile = File(...), db: Session = Depends(get_db)
+    id: int, resume: UploadFile = File(...), db=Depends(get_db)
 ):
-    applicant = db.query(Applicant).filter(Applicant.id == id).first()
-    if not applicant:
+    applicants = db["applicants"]
+    user = applicants.find_one({"applicant_id": id})
+    if not user:
         raise HTTPException(status_code=404, detail="Applicant not found")
-
     if not resume.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDFs allowed.")
 
@@ -80,42 +78,36 @@ def upload_resume(
     with open(save_path, "wb") as f:
         f.write(resume.file.read())
 
-    applicant.resume_path = f"{id}_{resume.filename}"
-    db.commit()
+    applicants.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"resume_path": save_path}}
+    )
     return {"message": "Resume uploaded!", "path": save_path}
 
 
-@router.get("/applicants/{du_id}", response_model=UserRead)
-def get_applicant(du_id: str, db: Session = Depends(get_db)):
-    user = db.query(Applicant).filter(Applicant.du_id == du_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Not found")
-    return user
+@router.get("/applicants/{du_id}")
+def get_applicant(du_id: str, db=Depends(get_db)):
+    applicants = db["applicants"]
+    doc = applicants.find_one({"du_id": du_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Applicant not found")
+    return doc
 
 
 @router.get("/get_all_applicants/")
-def all_applicants_with_preferences(db: Session = Depends(get_db)):
-    applicants = db.query(Applicant).options(joinedload(Applicant.preferences)).all()
-    if not applicants:
+def all_applicants_with_preferences(db=Depends(get_db)):
+    applicants = db["applicants"]
+    docs = list(applicants.find({}))
+    if not docs:
         raise HTTPException(status_code=404, detail="No applicants found")
-
-    return applicants
+    return docs
 
 
 @router.get("/applicant_given_preferences/{applicant_id}")
-def get_applicant_given_preferences(applicant_id: int, db: Session = Depends(get_db)):
-    applicant = db.query(Applicant).filter(Applicant.id == applicant_id).first()
-    if not applicant:
+def get_applicant_given_preferences(applicant_id: int, db=Depends(get_db)):
+    applicants = db["applicants"]
+    doc = applicants.find_one({"applicant_id": applicant_id})
+    if not doc:
         raise HTTPException(status_code=404, detail="Applicant not found")
-
-    return applicant.given_preferences
-
-
-@router.get("/applicant/resume/{path}")
-def get_applicant_resume(path: str):
-    path = os.path.join("resumes", path)
-    if not os.path.exists(path):
-        raise HTTPException(status_code=404, detail="Resume not found")
-    return FileResponse(
-        path, media_type="application/pdf", filename=os.path.basename(path)
-    )
+    # return only the boolean (or full doc if you prefer)
+    return {"given_preferences": doc.get("given_preferences", False)}

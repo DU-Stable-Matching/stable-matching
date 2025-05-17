@@ -73,7 +73,6 @@ const ResumeUpload: React.FC<ResumeUploadProps> = ({ onUpload }) => {
       <div
         onDrop={onDrop}
         onDragOver={onDragOver}
-        onClick={() => !uploaded && inputRef.current?.click()}
         className={`
           relative cursor-pointer rounded-lg border-2 p-6 flex flex-col items-center justify-center transition
           ${error 

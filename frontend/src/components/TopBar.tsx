@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const TopBar = () => {
     const [show, setShow] = useState(false);
     return (
-        <div className="fixed w-full">
+        <div className="fixed w-full z-50">
             <div className="bg-dark-green flex justify-between px-12 h-14">
                 <Link to="/" className="flex items-center text-white">
                     <h1 className="text-xl font-semibold">OptiMatch</h1>

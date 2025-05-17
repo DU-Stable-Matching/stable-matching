@@ -24,7 +24,7 @@ const AdminDashboard: React.FC = () => {
         `http://127.0.0.1:8000/api/admin_algorithm/${userID}`
       )
       .then(res => {
-        setMatch(res.data);
+        setMatch(res.data.match);
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));

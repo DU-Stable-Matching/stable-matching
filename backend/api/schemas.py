@@ -41,6 +41,7 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
+    is_returner: Optional[bool] = None
     year_in_college: Optional[int] = None
 
 

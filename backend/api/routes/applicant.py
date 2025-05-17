@@ -3,7 +3,8 @@ from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
 from ..models import Applicant, BuildingPref
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from sqlalchemy.orm import Session, joinedload
-from ..utlils import get_db, get_password_hash, verify_password
+from ..utlils import get_password_hash, verify_password
+from ..mongo import get_db
 import os
 
 router = APIRouter()
@@ -11,41 +12,47 @@ router = APIRouter()
 
 @router.post("/create_applicant/")
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
+    applcants = db["applicants"]
+    existing = applcants.find_one({"du_id": user.du_id})
+
     if existing:
         raise HTTPException(status_code=400, detail="DU ID already exists.")
 
+    # find max id in applicats colleciotn
+    max_id = applcants.find_one({}, sort=[("applicant_id", -1)])
+
     new_user = Applicant(
+        applicant_id=max_id["id"] + 1 if max_id else 1,
         du_id=user.du_id,
         name=user.name,
         email=user.email,
         password=get_password_hash(user.password),
         year_in_college=user.year_in_college,
     )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "User created successfully!", "id": new_user.id}
+    # Insert the new user into the MongoDB collection
+    applcants.insert_one(new_user.model_dump())
+
+   
+    return {"message": "User created successfully!", "id": new_user.applicant_id}
 
 
 @router.post("/login/")
 def login(user: UserLogin, db: Session = Depends(get_db)):
-    print(user)
-    db_user = db.query(Applicant).filter(Applicant.du_id == user.du_id).first()
+    applicants = db["applicants"]
+    db_user = applicants.find_one({"du_id": user.du_id})
 
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    print("done1")
     if not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    print("done2")
 
     return {"message": "Login successful!", "id": db_user.id}
 
 
 @router.post("/apply/")
 def apply(data: RAAppCreate, db: Session = Depends(get_db)):
-    user = db.query(Applicant).filter(Applicant.id == data.id).first()
+    applicant = db["applicants"] 
+    user 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 

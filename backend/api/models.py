@@ -2,7 +2,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class Applicant(BaseModel):
-    id: int
+    applicant_id: int
     du_id: str
     name: str
     email: str
@@ -14,7 +14,7 @@ class Applicant(BaseModel):
 
 
 class Admin(BaseModel):
-    id: int
+    admin_id: int
     ad_du_id: str
     name: str
     email: str
@@ -24,7 +24,7 @@ class Admin(BaseModel):
 
 
 class Building(BaseModel):
-    id: int
+    build_id: int
     building_name: str
     ra_needed: int
     admin_id: int

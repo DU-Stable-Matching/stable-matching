@@ -1,8 +1,14 @@
 from pymongo import MongoClient
+from models import Applicant, Admin, Building
 
-client = MongoClient("mongodb://admin:secret@localhost:27017")
-db = client.my_new_database  # instead of client["my_new_database"]
-coll = db.products  # instead of db["products"]
+client = MongoClient("mongodb://admin:pass@localhost:27017")
+db = client.matching
 
-coll.insert_one({"name": "Gadget", "price": 19.99})
-print(coll.find_one())
+
+def get_db():
+    db = client.matching
+    try:
+        yield db
+    finally:
+        db.close()
+

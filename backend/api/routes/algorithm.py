@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from ..utlils import get_preferences, get_db
+from ..utlils import get_preferences
 from ..models import Applicant, FinalMatching, Building, Admin
+from ..mongo import get_db
 from ..logic import get_matching
+from pymongo.collection import Collection
 from ..schemas import matchApplicant, matchBuilding
 
 router = APIRouter()
@@ -18,32 +20,21 @@ def populate_matches(matches: list[tuple[int, int]], db: Session):
     db.commit()
 
 
-def get_building(building_id: int, db: Session):
-    building = db.query(Building).filter(Building.id == building_id).first()
+def get_building(building_id: int, db: Depends(get_db)):
+    buildings: Collection = db["buildings"]
+    building = buildings.find_one({"building_id": building_id})
     if not building:
-        raise HTTPException(status_code=404, detail="Building not found")
+        raise Exception("could not retrieve Building")
 
-    admin = db.query(Admin).filter(Admin.id == building.boss_id).first()
-    match = matchBuilding(
-        name=building.name, ra_needed=building.ra_needed, admin_name=admin.name
-    )
-    return match
+    return building
 
 
-def get_applicant(applicant_id: int, db: Session):
-    applicant = db.query(Applicant).filter(Applicant.id == applicant_id).first()
+def get_applicant(applicant_id: int, db: Depends(get_db)):
+    applicants: Collection = db["Applicant"]
+    applicant = applicants.find_one({"building_id": applicant_id})
     if not applicant:
-        raise HTTPException(status_code=404, detail="Applicant not found")
-    # print(applicant.name)
+        raise Exception("could not retrieve applicant")
 
-    applicant = matchApplicant(
-        name=applicant.name,
-        email=applicant.email,
-        year_in_college=applicant.year_in_college,
-        is_returner=applicant.is_returner,
-        why_ra=applicant.why_ra,
-        resume_path=applicant.resume_path,
-    )
     return applicant
 
 

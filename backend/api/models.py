@@ -28,3 +28,8 @@ class Building(BaseModel):
     building_name: str
     ra_needed: int
     admin_id: int
+
+
+class FinalMatching(BaseModel):
+    admin_id: int
+    applicant_id: int

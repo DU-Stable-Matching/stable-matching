@@ -8,9 +8,9 @@ class Applicant(BaseModel):
     email: str
     password: str
     year_in_college: int
-    is_returner: bool
-    resume_path: str
-    pref: list[int]
+    is_returner: bool | None
+    resume_path: str | None
+    pref: list[int] | None
     has_given_pref: bool = False
 
 

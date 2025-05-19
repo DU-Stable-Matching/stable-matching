@@ -3,7 +3,7 @@ from typing import List, Tuple
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from pymongo.collection import Collection
-from .mongo import get_db
+from .mongo import db
 
 # utils/security.py
 from passlib.hash import bcrypt

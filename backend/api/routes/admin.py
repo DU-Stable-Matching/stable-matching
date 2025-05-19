@@ -58,8 +58,7 @@ def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
     # Clear existing rankings
     rankings.delete_many({"admin_id": data.admin_id})
 
-    # Insert new rankings
-    new_rankings = []
+    new_rankings = [] ## create new rankings 
     for r in data.list_of_rankings:
         applicant = applicants.find_one({"name": r.applicant_name})
         if not applicant:

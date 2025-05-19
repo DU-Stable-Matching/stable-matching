@@ -1,19 +1,12 @@
-from .database import SessionLocal
 from .models import Admin, Applicant, Building
 from typing import List, Tuple
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from pymongo.collection import Collection
+from .mongo import get_db
 
 # utils/security.py
 from passlib.hash import bcrypt
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 def get_password_hash(password: str) -> str:
@@ -31,38 +24,11 @@ def get_preferences():
       2. Applicant preferences as (applicant_id, [(building_name, boss_id), …])
     Raises 404 if no admins or no applicants exist.
     """
-    db = SessionLocal()
+    db = get_db()
+    applicants: Collection = db["applicants"]
+    admins: Collection = db["Admins"]
 
-    admins = db.query(Admin).all()
-    if not admins:
-        raise Exception("No admins found")
-
-    admin_pref = []
-
-    for ad in admins:
-        temp = (ad.id, [])
-        ad.rankings.sort(key=lambda x: x.rank)
-        for rank in ad.rankings:
-    
-            temp[1].append(rank.applicant_id)
-        
-        admin_pref.append(temp)
-
-    user_pref = []
-
-    apps = db.query(Applicant).all()
-    if not apps:
-        raise Exception("No users found")
-
-    for app in apps:
-        temp = (app.id, [])
-        app.preferences.sort(key=lambda x: x.rank)
-        for pref in app.preferences:
-            building =  db.query(Building).filter(Building.name == pref.building_name).first()
-            temp[1].append(building.id)
-        user_pref.append(temp)
-    # if len(user_pref) > len(admin_pref):
-
-    #     user_pref =  user_pref[: len(admin_pref)]
+    user_pref = applicants.find_one({})["pref"]
+    admin_pref = admins.find_one({})["pref"]
 
     return user_pref, admin_pref

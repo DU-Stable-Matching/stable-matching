@@ -39,7 +39,7 @@ def get_applicant(applicant_id: int, db: Depends(get_db)):
 
 
 @router.get("/user_algorithm/{user_id}", response_model=matchBuilding)
-def run_algorithm(user_id: int, db: Session = Depends(get_db)):
+def run_applicant_algorithm(user_id: int, db: Session = Depends(get_db)):
     try:
         user_pref, admin_pref = get_preferences()
     except Exception as e:
@@ -87,7 +87,7 @@ def run_algorithm(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/admin_algorithm/{admin_id}", response_model=matchApplicant)
-def run_algorithm(admin_id: int, db: Session = Depends(get_db)):
+def run_admin_algorithm(admin_id: int, db: Session = Depends(get_db)):
     # Fetch preferences from the database
     try:
         user_pref, admin_pref = get_preferences()

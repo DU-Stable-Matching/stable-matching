@@ -11,6 +11,7 @@ class Applicant(BaseModel):
     is_returner: bool
     resume_path: str
     pref: list[int]
+    has_given_pref: bool = False
 
 
 class Admin(BaseModel):
@@ -21,6 +22,7 @@ class Admin(BaseModel):
     password: str
     building: int
     pref: list[list[int]]
+    has_given_pref: bool = False
 
 
 class Building(BaseModel):

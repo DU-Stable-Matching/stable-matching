@@ -49,23 +49,22 @@ def apply(data: RAAppCreate, db=Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # TODO: likely the prefrences will come in the form which are not well formated
+    # this means there will likely be a
+
     update_fields = {
         "is_returner": data.is_returner,
         "why_ra": data.why_ra,
         "preferences": [pref.model_dump() for pref in data.preferences],
-        "given_preferences": True,
+        "has_given_pref": True,
     }
-    applicants.update_one(
-        {"_id": user["_id"]},
-        {"$set": update_fields}
-    )
+
+    applicants.update_one({"_id": user["_id"]}, {"$set": update_fields})
     return {"message": "Application submitted!"}
 
 
 @router.post("/upload_resume/{id}")
-def upload_resume(
-    id: int, resume: UploadFile = File(...), db=Depends(get_db)
-):
+def upload_resume(id: int, resume: UploadFile = File(...), db=Depends(get_db)):
     applicants = db["applicants"]
     user = applicants.find_one({"applicant_id": id})
     if not user:
@@ -78,10 +77,7 @@ def upload_resume(
     with open(save_path, "wb") as f:
         f.write(resume.file.read())
 
-    applicants.update_one(
-        {"_id": user["_id"]},
-        {"$set": {"resume_path": save_path}}
-    )
+    applicants.update_one({"_id": user["_id"]}, {"$set": {"resume_path": save_path}})
     return {"message": "Resume uploaded!", "path": save_path}
 
 

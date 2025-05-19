@@ -8,9 +8,10 @@ class Applicant(BaseModel):
     email: str
     password: str
     year_in_college: int
-    is_returner: bool
-    resume_path: str
-    pref: list[int]
+    is_returner: bool | None
+    resume_path: str | None
+    pref: list[int] | None
+    has_given_pref: bool = False
 
 
 class Admin(BaseModel):
@@ -21,6 +22,7 @@ class Admin(BaseModel):
     password: str
     building: int
     pref: list[list[int]]
+    has_given_pref: bool = False
 
 
 class Building(BaseModel):
@@ -28,3 +30,8 @@ class Building(BaseModel):
     building_name: str
     ra_needed: int
     admin_id: int
+
+
+class FinalMatching(BaseModel):
+    admin_id: int
+    applicant_id: int

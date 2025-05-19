@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from bson import ObjectId
-from ..utlils import get_password_hash, verify_password
+from ..utlils import get_password_hash, verify_password ## we need to fix this typo in the file name
 from ..schemas import AdminLogin, AdminRankingCreate
 from ..mongo import get_db
 
@@ -14,19 +13,21 @@ def admin_login(admin: AdminLogin, db=Depends(get_db)):
     if not db_admin or not verify_password(admin.password, db_admin["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    return {"message": "Login successful!", "id": str(db_admin["_id"])}
+    return {"message": "Login successful!", "id": db_admin["admin_id"]}
 
 
 @router.get("/admin/{admin_id}")
 def get_admin(admin_id: str, db=Depends(get_db)):
+    ## why do we pass this as a string?
     admins = db["admins"]
     try:
-        admin_db = admins.find_one({"_id": ObjectId(admin_id)})
-    except:
+        admin_id_int = int(admin_id)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid admin ID format")
+
+    admin_db = admins.find_one({"admin_id": admin_id_int})
     if not admin_db:
         raise HTTPException(status_code=404, detail="Admin not found")
-    admin_db["_id"] = str(admin_db["_id"])
     return admin_db
 
 
@@ -41,8 +42,6 @@ def get_all_admins(db=Depends(get_db)):
     admins = list(db["admins"].find({}))
     if not admins:
         raise HTTPException(status_code=404, detail="No admins found")
-    for admin in admins:
-        admin["_id"] = str(admin["_id"])
     return admins
 
 
@@ -52,12 +51,7 @@ def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
     applicants = db["applicants"]
     rankings = db["admin_rankings"]
 
-    try:
-        admin_obj_id = ObjectId(data.admin_id)
-    except:
-        raise HTTPException(status_code=400, detail="Invalid admin ID format")
-
-    admin = admins.find_one({"_id": admin_obj_id})
+    admin = admins.find_one({"admin_id": data.admin_id})
     if not admin:
         raise HTTPException(status_code=404, detail="Admin not found")
 
@@ -72,7 +66,7 @@ def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
             raise HTTPException(status_code=404, detail=f"Applicant '{r.applicant_name}' not found")
         new_rankings.append({
             "admin_id": data.admin_id,
-            "applicant_id": str(applicant["_id"]),
+            "applicant_id": applicant["applicant_id"],
             "rank": r.rank
         })
 
@@ -85,11 +79,9 @@ def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
 @router.get("/admin_rankings_by_admin/{admin_id}")
 def view_admin_rankings(admin_id: str, db=Depends(get_db)):
     try:
-        ObjectId(admin_id)  # validate
-    except:
+        admin_id_int = int(admin_id)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid admin ID format")
 
-    rankings = list(db["admin_rankings"].find({"admin_id": admin_id}))
-    for r in rankings:
-        r["_id"] = str(r["_id"])
+    rankings = list(db["admin_rankings"].find({"admin_id": admin_id_int}))
     return rankings

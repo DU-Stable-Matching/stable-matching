@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from .database import engine, Base
+from .database import engine
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
 from .routes import building, admin, algorithm, applicant

@@ -1,13 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends
-from ..utlils import get_password_hash, verify_password ## we need to fix this typo in the file name
+from fastapi import APIRouter, HTTPException
+from ..utlils import get_password_hash, verify_password, db ## we need to fix this typo in the file name
 from ..schemas import AdminLogin, AdminRankingCreate
-from ..mongo import get_db
 
 router = APIRouter()
 
 
 @router.post("/admin_login/")
-def admin_login(admin: AdminLogin, db=Depends(get_db)):
+def admin_login(admin: AdminLogin):
     admins = db["admins"]
     db_admin = admins.find_one({"du_id": admin.du_id})
     if not db_admin or not verify_password(admin.password, db_admin["password"]):
@@ -17,8 +16,7 @@ def admin_login(admin: AdminLogin, db=Depends(get_db)):
 
 
 @router.get("/admin/{admin_id}")
-def get_admin(admin_id: str, db=Depends(get_db)):
-    ## why do we pass this as a string?
+def get_admin(admin_id: str):
     admins = db["admins"]
     try:
         admin_id_int = int(admin_id)
@@ -32,13 +30,13 @@ def get_admin(admin_id: str, db=Depends(get_db)):
 
 
 @router.get("/admin_given_preferences/{admin_id}")
-def get_admin_given_preferences(admin_id: str, db=Depends(get_db)):
+def get_admin_given_preferences(admin_id: str):
     admin = get_admin(admin_id, db)
     return admin.get("pref", [])
 
 
 @router.get("/get_all_admins/")
-def get_all_admins(db=Depends(get_db)):
+def get_all_admins():
     admins = list(db["admins"].find({}))
     if not admins:
         raise HTTPException(status_code=404, detail="No admins found")
@@ -46,7 +44,7 @@ def get_all_admins(db=Depends(get_db)):
 
 
 @router.post("/admin_rank/")
-def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
+def admin_rank(data: AdminRankingCreate):
     admins = db["admins"]
     applicants = db["applicants"]
     rankings = db["admin_rankings"]
@@ -71,12 +69,12 @@ def admin_rank(data: AdminRankingCreate, db=Depends(get_db)):
 
     if new_rankings:
         rankings.insert_many(new_rankings)
-
+    admin["has_given_pref"] = True
     return {"message": "Rankings submitted successfully!"}
 
 
 @router.get("/admin_rankings_by_admin/{admin_id}")
-def view_admin_rankings(admin_id: str, db=Depends(get_db)):
+def view_admin_rankings(admin_id: str):
     try:
         admin_id_int = int(admin_id)
     except ValueError:

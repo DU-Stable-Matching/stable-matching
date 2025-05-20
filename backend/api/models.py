@@ -21,7 +21,7 @@ class Admin(BaseModel):
     email: str
     password: str
     building: int
-    pref: list[list[int]]
+    pref: list[list[int]] # list of applicant ids, each sublist represents applicants for a given preference level equal to the index of the sublist
     has_given_pref: bool = False
 
 

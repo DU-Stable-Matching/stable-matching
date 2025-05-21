@@ -7,3 +7,5 @@ declare module '*.jpg';
 declare module '*.jpeg';
 declare module '*.svg';
 declare module '*.gif';
+
+/// <reference types="@react-three/fiber" />

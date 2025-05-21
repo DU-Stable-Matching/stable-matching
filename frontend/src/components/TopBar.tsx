@@ -5,63 +5,57 @@ import { Link } from 'react-router-dom';
 const TopBar = () => {
     const [show, setShow] = useState(false);
     return (
-        <div className="fixed w-full z-50">
-            <div className="bg-dark-green flex justify-between px-12 h-14">
-                <Link to="/" className="flex items-center text-white">
-                    <h1 className="text-xl font-semibold">OptiMatch</h1>
-                </Link>
+        <div className="fixed w-full z-50 justify-center flex pointer-events-none">
+            {/* Regular TopBar */}
+            <div className="bg-white/50 backdrop-blur-md hidden md:flex justify-center my-8 px-4 h-14 w-[124] rounded-full pointer-events-auto">
                 <div className="flex items-center">
-                    <ul className="hidden lg:flex px-8 text-white">
+                    <ul className="hidden md:flex text-black font-bold">
                         <li>
                             <Link to="/">Home</Link>
                         </li>
                         <li>
-                            <a href="#about">About Us</a>
+                           <Link to="/#about">About Us</Link>
                         </li>
                         <li>
-                            <a href="#contact">Contact</a>
+                            <Link to="/#contact">Contact</Link>
                         </li>
                         <li>
-                            <a href="#services">Services</a>
+                            <Link to="/#services">Services</Link>
                         </li>
                     </ul>
-                    {show && (
-                        <div className="overflow-y-hidden w-full pt-24 lg:hidden absolute left-0 top-0 h-screen text-white bg-dark-green flex-col justify-between">
-                            <div className="flex justify-center lg:hidden z-10 pb-10 cursor-pointer" onClick={() => setShow(!show)}>
-                                <FaBars size={20} color="white" />
-                            </div>
-                            <ul className="text-center flex-col w-full h-full space-y-4">
-                                <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
-                                    <a href="#home">Home</a>
-                                </li>
-                                <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
-                                    <a href="#about">About Us</a>
-                                </li>
-                                <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
-                                    <a href="#contact">Contact</a>
-                                </li>
-                                <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
-                                    <a href="#services">Services</a>
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-                    <div className="flex items-center space-x-4">
-                        {!show && (
-                            <div className="lg:hidden z-10 cursor-pointer" onClick={() => setShow(!show)}>
-                                <FaBars size={20} color="white" />
-                            </div>
-                        )}
-                        <Link to="/signup" className="px-3 py-1 bg-transparent border-white border-2 text-white rounded-md">
-                            Sign Up
-                        </Link>
-                        <Link to="/login" className="px-3 py-1 bg-white border-white border-2 text-dark-green rounded-md">
-                            Login
-                        </Link>
-                    </div>
                 </div>
             </div>
-            <hr className="border-white border-1 w-full" />
+
+            {/* Mobile Menu */}
+            <div className='flex md:hidden z-10 cursor-pointer pointer-events-auto bg-white w-full h-16 shadow-lg' onClick={() => setShow(!show)}>
+                {!show && (
+                <div className='flex flex-row-reverse w-full justify-between align-middle m-4'>
+                    <FaBars size={20} color="black" />
+                    <div className="text-2xl font-bold text-black">Optimatch</div>
+                </div>
+                )}
+            </div>
+            {show && (
+                <div className="overflow-y-hidden pointer-events-auto w-full pt-24 md:hidden flex absolute left-0 top-0 h-screen text-black bg-white flex-col justify-center align-center">
+                    <div className="flex justify-center md:hidden z-10 pb-10 cursor-pointer" onClick={() => setShow(!show)}>
+                        <FaBars size={20} color="black" />
+                    </div>
+                    <ul className="text-center flex-col w-full h-full space-y-4">
+                        <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
+                             <Link to="/">Home</Link>
+                        </li>
+                        <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
+                            <Link to="/#about">About Us</Link>
+                        </li>
+                        <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
+                            <Link to="/#contact">Contact</Link>
+                        </li>
+                        <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
+                           <Link to="/#services">Services</Link>
+                        </li>
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

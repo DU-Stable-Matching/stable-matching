@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, use } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../userState.ts";
+import { useUserStore } from "../userState";
 import axios from "axios";
 
 const LoginScreen: React.FC = () => {

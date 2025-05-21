@@ -1,13 +1,16 @@
 import React from 'react'
-import SocialRow from './SocialRow.tsx'
-import Policies from './Policies.tsx'
+import SocialRow from './SocialRow'
+import Policies from './Policies'
 
 const Footer = () => {
   return (
-    <div className='bg-myrtle-green flex-col w-full min-h-[30vh] py-12'>
+    <div className='bg-transparent flex-col w-full min-h-[30vh] py-12'>
+        <div className="justify-center flex w-full items-center px-8">
+            <hr className="border-black border-1 w-full" />
+        </div>
         <div className='justify-between flex w-full p-8 items-center'>
-            <h2 className='text-lg text-white'>OptiMatch</h2>
-            <ul className="hidden lg:flex px-8 text-white font-semibold">
+            <h2 className='text-lg text-black'>OptiMatch</h2>
+            <ul className="hidden lg:flex px-8 text-black font-semibold">
                 <li> 
                     <a href="#home">Home</a>
                 </li>
@@ -24,7 +27,7 @@ const Footer = () => {
             <SocialRow />
         </div>
         <div className="justify-center flex w-full items-center px-8">
-            <hr className="border-white border-1 w-full" />
+            <hr className="border-black border-1 w-full" />
         </div>
         <div>
             <Policies/>

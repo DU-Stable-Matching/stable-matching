@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Reorder } from 'framer-motion';
-import ResumeUpload from './ResumeUpload.tsx';
+import ResumeUpload from './ResumeUpload';
 import axios from 'axios';
-import { useUserStore } from '../userState.ts';
+import { useUserStore } from '../userState';
 
 interface RankFormProps {
   placesList: string[];

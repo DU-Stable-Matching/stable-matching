@@ -1,4 +1,3 @@
-import { s } from 'framer-motion/dist/types.d-DDSxwf0n';
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';

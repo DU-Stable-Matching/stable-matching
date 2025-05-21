@@ -27,16 +27,18 @@ const TopBar = () => {
             </div>
 
             {/* Mobile Menu */}
+            {!show && (
             <div className='flex md:hidden z-10 cursor-pointer pointer-events-auto bg-white w-full h-16 shadow-lg' onClick={() => setShow(!show)}>
-                {!show && (
                 <div className='flex flex-row-reverse w-full justify-between align-middle m-4'>
+                    <div className='flex justify-center align-middle mt-2'>
                     <FaBars size={20} color="black" />
+                    </div>
                     <div className="text-2xl font-bold text-black">Optimatch</div>
                 </div>
-                )}
             </div>
+            )}
             {show && (
-                <div className="overflow-y-hidden pointer-events-auto w-full pt-24 md:hidden flex absolute left-0 top-0 h-screen text-black bg-white flex-col justify-center align-center">
+                <div className="overflow-hidden pointer-events-auto w-full pt-24 md:hidden flex absolute left-0 top-0 h-screen text-black bg-white flex-col justify-center align-center">
                     <div className="flex justify-center md:hidden z-10 pb-10 cursor-pointer" onClick={() => setShow(!show)}>
                         <FaBars size={20} color="black" />
                     </div>

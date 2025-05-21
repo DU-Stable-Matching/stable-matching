@@ -4,6 +4,13 @@ import React, { useRef, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { seededRandom } from 'three/src/math/MathUtils';
 
+interface NodeConnectionProps {
+  index: number;
+  scroll: number;
+  startY: number;
+  endY: number;
+}
+
 const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, endY }) => {
   const leftX = -7;
   const rightX = 7;
@@ -42,13 +49,13 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
       </mesh>
 
       {/* Left Node */}
-      <mesh position={[leftX, leftY, 0]}>
+      <mesh position={[leftX, leftY, 0]} scale={[progress, progress, progress]}>
         <sphereGeometry args={[0.3, 16, 16]} />
         <meshBasicMaterial color="black" />
       </mesh>
 
       {/* Right Node */}
-      <mesh position={[rightX, rightY, 0]}>
+      <mesh position={[rightX, rightY, 0]} scale={[progress, progress, progress]}>
         <sphereGeometry args={[0.3, 16, 16]} />
         <meshBasicMaterial color="black" />
       </mesh>
@@ -57,8 +64,8 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
 };
 
 
-const yVals = [
-  1, 3, 4, -.5, -1.8, -2
+const yVals = [ // we can make these whatever we want
+  2, 3, 4.2, -.5, -1.2
 ];
 
 const BackgroundCanvas: React.FC = () => {
@@ -72,7 +79,7 @@ const BackgroundCanvas: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const NUM_CONNECTIONS = 6;
+  const NUM_CONNECTIONS = 7;
 
   return (
     <Canvas

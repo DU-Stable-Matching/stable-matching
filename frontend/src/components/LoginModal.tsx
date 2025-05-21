@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../userState";
 import axios from "axios";
 
-const LoginScreen: React.FC = () => {
+interface LoginModalProps {
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const LoginModal: React.FC<LoginModalProps> = ({ show, setShow }) => {
   const setUserID        = useUserStore((s) => s.setUserID);
   const setUserEmail     = useUserStore((s) => s.setEmail);
   const setGivePrefs     = useUserStore((s) => s.setGivePrefrences);
@@ -15,6 +20,24 @@ const LoginScreen: React.FC = () => {
   const [role, setRole]         = useState<"admin" | "applicant">("applicant");
   const [error, setError]       = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Disable scrolling when modal is open
+  React.useEffect(() => {
+    if (show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [show]);
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      setShow(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -28,12 +51,10 @@ const LoginScreen: React.FC = () => {
           ? "http://127.0.0.1:8000/api/login/"
           : "http://127.0.0.1:8000/api/admin_login/";
 
-
       const prefsUrl =
         role === "applicant"
           ? "http://127.0.0.1:8000/api/applicant_given_preferences/"
           : "http://127.0.1:8000/api/admin_given_preferences/";
-
 
       // 1) Login
       const response = await axios.post(loginUrl, payload, {
@@ -43,22 +64,15 @@ const LoginScreen: React.FC = () => {
         },
       });
 
-      console.log("Login response:", response.data);
-      // 2) Common setup
       setUserID(response.data.id);
-    
-    
       setUserEmail(response.data.email);
-      
-      
+
       // 3) Check if they've given prefs
       const { data: hasGivenPrefs } = await axios.get<boolean>(
-        prefsUrl+response.data.id,
+        prefsUrl + response.data.id,
       );
-      
-      // after you’ve fetched hasGivenPrefs...
+
       setGivePrefs(hasGivenPrefs);
-      console.log("Has given preferences:", hasGivenPrefs);
 
       if (role === "applicant") {
         if (hasGivenPrefs) {
@@ -73,10 +87,7 @@ const LoginScreen: React.FC = () => {
           navigate("/admin_pref", { replace: true });
         }
       }
-
-      
     } catch (err: any) {
-      console.error("Login error:", err);
       if (err.response?.status === 401) {
         setError("Invalid credentials. Please try again.");
       } else {
@@ -87,9 +98,18 @@ const LoginScreen: React.FC = () => {
     }
   };
 
+  if (!show) return null;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-periwinkle px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      onClick={handleBackdropClick}
+      style={{ transition: "background 0.2s" }}
+    >
+      <div
+        className="w-full max-w-md bg-white rounded-lg shadow-md p-8 relative"
+        onClick={e => e.stopPropagation()}
+      >
         {/* Role Toggle */}
         <div className="inline-flex border border-dark-green rounded-full overflow-hidden mb-6">
           <button
@@ -162,18 +182,19 @@ const LoginScreen: React.FC = () => {
           >
             {isLoading ? "Logging in..." : "Login"}
           </button>
-
-          <button
-            type="button"
-            onClick={() => navigate("/signup")}
-            className="w-full bg-white text-dark-green py-2 rounded-lg font-medium border border-dark-green hover:bg-myrtle-green hover:text-white"
-          >
-            Create an account
-          </button>
         </form>
+        {/* Close button (optional) */}
+        <button
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-2xl"
+          onClick={() => setShow(false)}
+          aria-label="Close"
+          type="button"
+        >
+          &times;
+        </button>
       </div>
     </div>
   );
 };
 
-export default LoginScreen;
+export default LoginModal;

@@ -3,8 +3,6 @@ import React, { JSX } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import Pref from './pages/Pref';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
 import DashBoard from './pages/DashBoard';
 import AdminPref from './pages/AdminPref';
 import AdminDashBoard from './pages/AdminDashBoard';
@@ -21,8 +19,6 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
       <Route path="/" element={<Home />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashBoard /></ProtectedRoute>} />
       <Route path="/user_pref" element={<ProtectedRoute><Pref /></ProtectedRoute>} />

@@ -1,14 +1,17 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../userState.ts";
+import { useUserStore } from "../userState";
 import axios from "axios";
 
+interface SignupModalProps {
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const SignupScreen: React.FC = () => {
+const SignupModal: React.FC<SignupModalProps> = ({ show, setShow }) => {
   const setUserID = useUserStore((s) => s.setUserID);
   const setUserEmail = useUserStore((s) => s.setEmail);
   const navigate = useNavigate();
-
 
   const [userExists, setUserExists] = useState(false);
 
@@ -17,6 +20,18 @@ const SignupScreen: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [yearInCollege, setYearInCollege] = useState<number>(0);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [show]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,13 +43,13 @@ const SignupScreen: React.FC = () => {
       password,
       year_in_college: yearInCollege,
     };
-    
+
     axios
       .post("http://127.0.0.1:8000/api/create_applicant/", payload, {
         headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
       })
       .then((response) => {
         setUserID(response.data.user_id);
@@ -48,22 +63,33 @@ const SignupScreen: React.FC = () => {
           console.error("An error occurred:", error);
         }
       });
-    
   };
 
+  if (!show) return null;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-periwinkle px-4">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      onClick={() => setShow(false)}
+      aria-modal="true"
+      role="dialog"
+    >
+      <div
+        className="w-full max-w-md bg-white rounded-lg shadow-md p-8 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-2xl font-bold text-dark-green mb-6 text-center">
           Sign Up
         </h2>
-        
+
         {userExists && (
           <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
-            <p className="text-sm">User already exists. Please use a different email or login.</p>
+            <p className="text-sm">
+              User already exists. Please use a different email or login.
+            </p>
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label htmlFor="duId" className="block text-dark-green mb-1">
@@ -121,7 +147,7 @@ const SignupScreen: React.FC = () => {
             />
           </div>
 
-            <div>
+          <div>
             <label htmlFor="year" className="block text-dark-green mb-1">
               Year in College
             </label>
@@ -129,13 +155,15 @@ const SignupScreen: React.FC = () => {
               id="year"
               type="number"
               value={yearInCollege}
-              onChange={(e) => setYearInCollege(Math.min(Math.max(Number(e.target.value), 0), 5))}
+              onChange={(e) =>
+                setYearInCollege(Math.min(Math.max(Number(e.target.value), 0), 5))
+              }
               min={0}
               max={5}
               required
               className="w-full border border-cool-gray rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-dark-green"
             />
-            </div>
+          </div>
 
           <button
             type="submit"
@@ -144,9 +172,17 @@ const SignupScreen: React.FC = () => {
             Sign Up
           </button>
         </form>
+        <button
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl font-bold"
+          onClick={() => setShow(false)}
+          aria-label="Close"
+          type="button"
+        >
+          &times;
+        </button>
       </div>
     </div>
   );
 };
 
-export default SignupScreen;
+export default SignupModal;

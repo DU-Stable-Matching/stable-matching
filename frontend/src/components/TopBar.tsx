@@ -2,8 +2,24 @@ import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const TopBar = () => {
+interface TopBarProps {
+    setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowSignup: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const TopBar: React.FC<TopBarProps> = ({setShowLogin, setShowSignup}) => {
     const [show, setShow] = useState(false);
+
+    const handleOpenSignup = () => {
+        setShowSignup(true);
+        setShow(false);
+    };
+
+    const handleOpenLogin = () => {
+        setShowLogin(true);
+        setShow(false);
+    };
+
     return (
         <div className="fixed w-full z-50 justify-center flex pointer-events-none">
             {/* Regular TopBar */}
@@ -54,6 +70,16 @@ const TopBar = () => {
                         </li>
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
                            <Link to="/#services">Services</Link>
+                        </li>
+                        <li>
+                        <div className="flex flex-row flex-wrap justify-center space-x-4">
+                        <button onClick={handleOpenSignup} className="px-3 py-1 text-2xl font-semibold bg-transparent border-black border-2 text-black rounded-md">
+                        Sign Up
+                        </button>
+                        <button onClick={handleOpenLogin} className="px-3 py-1 bg-black text-2xl font-semibold border-white border-2 text-white rounded-md">
+                        Login
+                        </button>
+                        </div>
                         </li>
                     </ul>
                 </div>

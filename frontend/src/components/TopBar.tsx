@@ -1,22 +1,23 @@
+import { s } from 'framer-motion/dist/types.d-DDSxwf0n';
 import React, { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 interface TopBarProps {
-    setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-    setShowSignup: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowLogin?: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowSignup?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TopBar: React.FC<TopBarProps> = ({setShowLogin, setShowSignup}) => {
     const [show, setShow] = useState(false);
 
     const handleOpenSignup = () => {
-        setShowSignup(true);
+        setShowSignup?.(true);
         setShow(false);
     };
 
     const handleOpenLogin = () => {
-        setShowLogin(true);
+        setShowLogin?.(true);
         setShow(false);
     };
 
@@ -71,16 +72,18 @@ const TopBar: React.FC<TopBarProps> = ({setShowLogin, setShowSignup}) => {
                         <li className="text-2xl font-semibold" onClick={() => setShow(!show)}>
                            <Link to="/#services">Services</Link>
                         </li>
-                        <li>
-                        <div className="flex flex-row flex-wrap justify-center space-x-4">
-                        <button onClick={handleOpenSignup} className="px-3 py-1 text-2xl font-semibold bg-transparent border-black border-2 text-black rounded-md">
-                        Sign Up
-                        </button>
-                        <button onClick={handleOpenLogin} className="px-3 py-1 bg-black text-2xl font-semibold border-white border-2 text-white rounded-md">
-                        Login
-                        </button>
-                        </div>
-                        </li>
+                        {setShowLogin && setShowSignup && (
+                            <li>
+                            <div className="flex flex-row flex-wrap justify-center space-x-4">
+                            <button onClick={handleOpenSignup} className="px-3 py-1 text-2xl font-semibold bg-transparent border-black border-2 text-black rounded-md">
+                            Sign Up
+                            </button>
+                            <button onClick={handleOpenLogin} className="px-3 py-1 bg-black text-2xl font-semibold border-white border-2 text-white rounded-md">
+                            Login
+                            </button>
+                            </div>
+                            </li>
+                        )}
                     </ul>
                 </div>
             )}

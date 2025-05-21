@@ -1,17 +1,26 @@
-import React from 'react'
-import Hero from '../components/Hero.tsx'
-import TopBar from '../components/TopBar.tsx'
-import AboutUs from '../components/AboutUs.tsx'
-import SignUpSlice from '../components/SignUpSlice.tsx'
-import Footer from '../components/Footer.tsx'
+import React, { use, useState } from 'react'
+import Hero from '../components/Hero'
+import TopBar from '../components/TopBar'
+import Footer from '../components/Footer'
 import { BrowserRouter as Router } from 'react-router-dom'
+import LowerHome from '../components/LowerHome.js'
+import LoginModal from '../components/LoginModal'
+import SignupModal from '../components/SignupModal'
 
 const Home = () => {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  console.log(showLogin)
+
   return (
-    <>
-      <TopBar/>
-      <Hero/>
-    </>
+    <div className="flex flex-col">
+      <TopBar setShowLogin={setShowLogin} setShowSignup={setShowSignup}/>
+      <Hero setShowSignup={setShowSignup} setShowLogin={setShowLogin}/>
+      <LowerHome/>
+      <Footer/>
+      <LoginModal show={showLogin} setShow={setShowLogin}/>
+      <SignupModal show={showSignup} setShow={setShowSignup}/>
+    </div>
   )
 }
 

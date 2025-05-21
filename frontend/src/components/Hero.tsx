@@ -1,28 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Home from '../assets/img/home_img.png';
 
-const Hero = () => {
+interface HomeHeroProps {
+  setShowSignup: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Hero: React.FC<HomeHeroProps> = ({ setShowSignup, setShowLogin }) => {
   return (
-    <div id="home" className="w-full min-h-screen bg-myrtle-green flex items-center justify-center py-12">
-      <div className="mx-8 flex justify-between items-center w-full max-w-6xl">
-        <div className="mx-8 md:w-[40%] flex-col text-white space-y-6">
-          <h2 className="text-3xl md:text-5xl">Find Your Ideal Student Employee Today</h2>
-          <p>
-            Unlock the potential of your business by connecting with talented students eager to contribute. Our advanced algorithms ensure the perfect match for your employment needs.
-          </p>
-          <div className="space-x-4 flex">
-            <Link to="/signup" className="px-6 py-3 bg-transparent border-white border-2 text-white rounded-md">
-              Get Started
-            </Link>
-            <a href="#about" className="px-6 py-3 bg-white border-white border-2 text-dark-green rounded-md">
-              Learn More
-            </a>
+    <div>
+      <div id="home" className="w-full bg-transparent flex flex-col h-[50vh]">
+        <div className="invisible md:visible flex justify-between items-center w-full px-8 py-4 md:py-10">
+          <div className="text-2xl font-bold text-black">Optimatch</div>
+          <div className="flex items-center space-x-4">
+            <button onClick={() => setShowSignup(true)} className="px-3 py-1 bg-transparent border-black border-2 text-black rounded-md">
+            Sign Up
+            </button>
+            <button onClick={() => setShowLogin(true)} className="px-3 py-1 bg-black border-white border-2 text-white rounded-md">
+            Login
+            </button>
           </div>
         </div>
-        <div className="w-[40%] items-center hidden md:flex">
-          <img className="w-full" src={Home} alt="Home" />
+        <div className="flex flex-col items-center justify-between">
+          <div className='text-center mt-10 h-[50vh]'>
+            <h1 className="text-9xl font-bold text-black font-serif z-30">Let's Match</h1>
+          </div>
         </div>
+
       </div>
     </div>
   );

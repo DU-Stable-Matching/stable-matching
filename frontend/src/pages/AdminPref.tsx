@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import TopBar from '../components/TopBar.tsx';
-import RankForm from '../components/AdminRankForm.tsx';
+import TopBar from '../components/TopBar';
+import RankForm from '../components/AdminRankForm';
 
 interface Applicant {
   // whatever other fields you get...
@@ -23,7 +23,7 @@ const AdminPreferences: React.FC = () => {
         const applicants = response.data;
         console.log('Fetched applicants:', applicants);
         // map just the name field
-        setNameList(applicants.map(a => a.name));
+        setNameList(applicants.map((a: { name: any; }) => a.name));
       } catch (err) {
         console.error('Failed to load applicants', err);
       } finally {

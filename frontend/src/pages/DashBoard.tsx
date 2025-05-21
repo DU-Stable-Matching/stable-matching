@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../userState.ts';
+import { useUserStore } from '../userState';
 
 interface Match {
   name: string;
@@ -30,9 +30,9 @@ const ApplicantDashboard: React.FC = () => {
   }, [userID]);
 
   const handleLogout = () => {
-    // Clear the user state and redirect to the login page.
+    // Clear the user state and redirect back to the home page
     setUserID(null);
-    navigate('/login');
+    navigate('/');
   };
 
   if (loading) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Reorder } from 'framer-motion';
 import axios from 'axios';
-import { useUserStore } from '../userState.ts';
+import { useUserStore } from '../userState';
 
 interface RankFormProps {
   nameList: string[];

@@ -4,9 +4,7 @@ import TopBar from '../components/TopBar'
 import Footer from '../components/Footer'
 import { BrowserRouter as Router } from 'react-router-dom'
 import LowerHome from '../components/LowerHome.js'
-import TrustedBy from '../components/TrustedBy'
 import LoginModal from '../components/LoginModal'
-import SignUpSlice from '../components/SignUpSlice'
 import SignupModal from '../components/SignupModal'
 
 const Home = () => {

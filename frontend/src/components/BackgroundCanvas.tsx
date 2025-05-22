@@ -25,7 +25,7 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
 
   useFrame((_, delta) => {
     if (shouldAnimate && progress < 1) {
-      setProgress((prev) => Math.min(prev + delta * 0.8, 1));
+      setProgress((prev) => Math.min(prev + delta * 0.85, 1));
     }
   });
 
@@ -41,7 +41,7 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
   );
 
   const geometry = new THREE.TubeGeometry(line, 1, 0.03, 6, false); 
-  const circle = new THREE.CircleGeometry(0.3, 64, 16);
+  const circle = new THREE.CircleGeometry(0.325, 64);
 
   return (
     <>

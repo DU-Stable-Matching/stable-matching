@@ -111,26 +111,35 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, setShow }) => {
         onClick={e => e.stopPropagation()}
       >
         {/* Role Toggle */}
-        <div className="inline-flex border border-dark-green rounded-full overflow-hidden mb-6">
+        <div className="relative inline-flex border border-dark-green rounded-full overflow-hidden mb-6 w-3/4 max-w-xs mx-auto">
+          <span
+            className="absolute top-0 left-0 h-full w-1/2 transition-transform duration-300 ease-in-out bg-dark-green rounded-full z-0"
+            style={{
+              transform: role === "admin" ? "translateX(100%)" : "translateX(0%)",
+            }}
+            aria-hidden="true"
+          />
           <button
             type="button"
             onClick={() => setRole("applicant")}
-            className={`flex-1 px-4 py-2 font-medium ${
+            className={`relative z-10 flex-1 px-4 py-2 font-medium transition-colors duration-300 ${
               role === "applicant"
-                ? "bg-dark-green text-white"
-                : "bg-white text-dark-green"
+          ? "text-white"
+          : "text-dark-green"
             }`}
+            style={{ outline: "none" }}
           >
             Applicant
           </button>
           <button
             type="button"
             onClick={() => setRole("admin")}
-            className={`flex-1 px-4 py-2 font-medium ${
+            className={`relative z-10 flex-1 px-4 py-2 font-medium transition-colors duration-300 ${
               role === "admin"
-                ? "bg-dark-green text-white"
-                : "bg-white text-dark-green"
+          ? "text-white"
+          : "text-dark-green"
             }`}
+            style={{ outline: "none" }}
           >
             Administrator
           </button>

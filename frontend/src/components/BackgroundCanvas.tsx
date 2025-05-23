@@ -25,7 +25,7 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
 
   useFrame((_, delta) => {
     if (shouldAnimate && progress < 1) {
-      setProgress((prev) => Math.min(prev + delta * 0.8, 1));
+      setProgress((prev) => Math.min(prev + delta * 0.85, 1));
     }
   });
 
@@ -41,6 +41,7 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
   );
 
   const geometry = new THREE.TubeGeometry(line, 1, 0.03, 6, false); 
+  const circle = new THREE.CircleGeometry(0.325, 64);
 
   return (
     <>
@@ -49,14 +50,12 @@ const NodeConnection: React.FC<NodeConnectionProps> = ({ index, scroll, startY, 
       </mesh>
 
       {/* Left Node */}
-      <mesh position={[leftX, leftY, 0]} scale={[progress, progress, progress]}>
-        <sphereGeometry args={[0.3, 16, 16]} />
+      <mesh position={[leftX, leftY, 0]} geometry={circle} scale={[progress, progress, progress]}>
         <meshBasicMaterial color="black" />
       </mesh>
 
       {/* Right Node */}
-      <mesh position={[rightX, rightY, 0]} scale={[progress, progress, progress]}>
-        <sphereGeometry args={[0.3, 16, 16]} />
+      <mesh position={[rightX, rightY, 0]} geometry={circle} scale={[progress, progress, progress]}>
         <meshBasicMaterial color="black" />
       </mesh>
     </>

@@ -10,8 +10,8 @@ Adds structured logging so that every significant step is recorded.
 import json
 import logging
 import os
-from pathlib import Path
-
+import json
+from pymongo import MongoClient
 from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 

@@ -41,29 +41,14 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
-    is_returner: Optional[bool] = None
-    year_in_college: Optional[int] = None
+    year_in_college: int
+    is_returner: bool
+    pref: list[str]
 
 
 class UserLogin(BaseModel):
     du_id: str
     password: str
-
-
-class UserRead(UserCreate):
-    year_in_college: Optional[int] = None
-    is_returner: Optional[bool] = None
-    why_ra: Optional[str] = None
-    resume_path: Optional[str] = None
-    preferences: List[BuildingPref] = []
-    model_config = ConfigDict(from_attributes=True)
-
-
-class RAAppCreate(BaseModel):
-    id: int
-    is_returner: bool
-    why_ra: str
-    preferences: List[BuildingPref]
 
 
 class matchApplicant(BaseModel):

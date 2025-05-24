@@ -1,6 +1,6 @@
 from fastapi.responses import FileResponse
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
-from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
+from ..schemas import UserCreate, UserLogin
 from ..models import Applicant  # your Pydantic/ORM model used for validating inserts
 from ..utlils import get_password_hash, verify_password, mongo_arr_to_dict
 from ..mongo import db
@@ -19,23 +19,23 @@ def create_user(
     if existing:
         raise HTTPException(status_code=400, detail="DU ID already exists.")
 
-    # find max applicant_id in applicants collection
     max_doc = applicants.find_one({}, sort=[("applicant_id", -1)])
     next_id = (max_doc["applicant_id"] + 1) if max_doc else 1
 
-    new_user = Applicant(
-        applicant_id=next_id,
-        du_id=user.du_id,
-        name=user.name,
-        email=user.email,
-        password=get_password_hash(user.password),
-        year_in_college=user.year_in_college,
-        resume_path=None,
-        pref=None,
-        is_returner=None,
-    )
-    applicants.insert_one(new_user.model_dump())
-    return {"message": "User created successfully!", "id": new_user.applicant_id}
+    pref_as_id = []
+    buildings = db["buildings"]
+
+    for bname in user.pref:
+        temp = buildings.find_one({"build_name": bname})
+        if temp:
+            pref_as_id.append(temp.building_id)
+
+    user_values = user.model_dump()
+    user_values["pref"] = pref_as_id
+
+    new_app = Applicant(applicant_id=next_id, has_given_pref=True, **user_values)
+    applicants.insert_one(new_app.model_dump())
+    return {"message": "student created successfully", "status": True}
 
 
 @router.post("/login/")
@@ -44,28 +44,11 @@ def login(user: UserLogin):
     db_user = applicants.find_one({"du_id": user.du_id})
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"message": "Login successful!", "id": db_user["applicant_id"]}
-
-
-@router.post("/apply/")
-def apply(data: RAAppCreate):
-    applicants = db["applicants"]
-    user = applicants.find_one({"applicant_id": data.id})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # TODO: likely the prefrences will come in the form which are not well formated
-    # this means there will likely be a
-
-    update_fields = {
-        "is_returner": data.is_returner,
-        "why_ra": data.why_ra,
-        "preferences": [pref.model_dump() for pref in data.preferences],
-        "has_given_pref": True,
+    return {
+        "message": "Login successful!",
+        "id": db_user["applicant_id"],
+        "status": True,
     }
-
-    applicants.update_one({"_id": user["_id"]}, {"$set": update_fields})
-    return {"message": "Application submitted!"}
 
 
 @router.post("/upload_resume/{id}")

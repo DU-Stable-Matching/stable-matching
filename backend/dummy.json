@@ -1,0 +1,172 @@
+[
+  [
+    {
+      "applicant_id": 101,
+      "du_id": "DU1234567",
+      "name": "Alice Wonderland",
+      "email": "alice.w@example.com",
+      "password": "securepassword123",
+      "year_in_college": 3,
+      "is_returner": true,
+      "resume_path": "/resumes/alice_w_resume.pdf",
+      "pref": [3, 1, 5, 2, 4],
+      "has_given_pref": true
+    },
+    {
+      "applicant_id": 102,
+      "du_id": "DU7654321",
+      "name": "Bob Thebuilder",
+      "email": "bob.t@example.com",
+      "password": "anothersecurepass",
+      "year_in_college": 2,
+      "is_returner": false,
+      "resume_path": "/resumes/bob_t_resume.docx",
+      "pref": [5, 4, 1, 3, 2],
+      "has_given_pref": true
+    },
+    {
+      "applicant_id": 103,
+      "du_id": "DU9876543",
+      "name": "Charlie Chaplin",
+      "email": "charlie.c@example.com",
+      "password": "mypasswordisstrong",
+      "year_in_college": 4,
+      "is_returner": true,
+      "resume_path": "/resumes/charlie_c_cv.pdf",
+      "pref": [1, 3, 2, 4, 5],
+      "has_given_pref": true
+    },
+    {
+      "applicant_id": 104,
+      "du_id": "DU1122334",
+      "name": "Diana Prince",
+      "email": "diana.p@example.com",
+      "password": "wonderwomanpass",
+      "year_in_college": 1,
+      "is_returner": null,
+      "resume_path": null,
+      "pref": [4, 2, 5, 1, 3],
+      "has_given_pref": true
+    },
+    {
+      "applicant_id": 105,
+      "du_id": "DU5566778",
+      "name": "Eve Harrington",
+      "email": "eve.h@example.com",
+      "password": "allaboutpassword",
+      "year_in_college": 3,
+      "is_returner": false,
+      "resume_path": "/resumes/eve_h_resume.pdf",
+      "pref": [5, 2, 1, 3, 4],
+      "has_given_pref": true
+    }
+  ],
+  [
+    {
+      "admin_id": 201,
+      "ad_du_id": "ADU001",
+      "name": "Prof. Eleanor Vance",
+      "email": "e.vance@university.edu",
+      "password": "adminsecure123",
+      "building": 3,
+      "pref": [
+        [],
+        [105],
+        [101],
+        [103],
+        [],
+        [102, 104]
+      ],
+      "has_given_pref": true
+    },
+    {
+      "admin_id": 202,
+      "ad_du_id": "ADU002",
+      "name": "Dr. Marcus Thorne",
+      "email": "m.thorne@university.edu",
+      "password": "anotheradminpass",
+      "building": 1,
+      "pref": [
+        [],
+        [104, 101],
+        [],
+        [102, 105],
+        [],
+        [103]
+      ],
+      "has_given_pref": true
+    },
+    {
+      "admin_id": 203,
+      "ad_du_id": "ADU003",
+      "name": "Dean Amelia Cole",
+      "email": "a.cole@university.edu",
+      "password": "deansecuritypass",
+      "building": 5,
+      "pref": [
+        [],
+        [102, 103],
+        [105],
+        [101, 104],
+        [],
+        []
+      ],
+      "has_given_pref": true
+    },
+    {
+      "admin_id": 204,
+      "ad_du_id": "ADU004",
+      "name": "Ms. Isabella Reed",
+      "email": "i.reed@university.edu",
+      "password": "officeadminpass",
+      "building": 2,
+      "pref": [
+        [],
+        [],
+        [103, 101],
+        [],
+        [105, 102],
+        [104]
+      ],
+      "has_given_pref": true
+    }
+  ],
+  [
+    {
+      "building_id": 1,
+      "building_name": "Centennial Hall",
+      "ra_needed": 10,
+      "admin_id": 201
+    },
+    {
+      "building_id": 2,
+      "building_name": "Johnson Residence Hall",
+      "ra_needed": 8,
+      "admin_id": 202
+    },
+    {
+      "building_id": 3,
+      "building_name": "Wyatt Center",
+      "ra_needed": 12,
+      "admin_id": 203
+    },
+    {
+      "building_id": 4,
+      "building_name": "Ritchie Hall",
+      "ra_needed": 7,
+      "admin_id": 204
+    },
+    {
+      "building_id": 5,
+      "building_name": "Nagel Hall",
+      "ra_needed": 9,
+      "admin_id": 201
+    },
+    {
+      "building_id": 6,
+      "building_name": "Nelson Hall",
+      "ra_needed": 6,
+      "admin_id": 202
+    }
+  ]
+]

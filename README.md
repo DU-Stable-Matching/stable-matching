@@ -20,11 +20,13 @@ These factors introduce additional complexity to the matching process.
 ## Tech Stack
 
 ### Backend
+
 - **Python**
 - **FastAPI**
 - **MongoDB** (for data storage)
 
 ### Frontend
+
 - **React** with **TypeScript**
 - **Tailwind CSS** (for styling)
 - **Axios** (for API calls)
@@ -33,6 +35,7 @@ These factors introduce additional complexity to the matching process.
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js + npm
 - Python 3.8+
 - A Python virtual environment tool (e.g., `venv`, `virtualenv`)
@@ -45,27 +48,24 @@ These factors introduce additional complexity to the matching process.
 git clone https://github.com/DU-Stable-Matching/stable-matching.git
 ```
 
-
-#### 2. Backend Setup
+### 2. Setup database
 
 ```bash
-# Navigate to the backend directory
-cd backend
-
-# install Python dependencies
-pip install -r requirements.txt
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate your Python virtual environment
-source venv/bin/activate  
-
-# Run the backend server
-fastapi run api/main.py
+docker compose  up -d
 ```
 
-#### 3. Frontend Setup
+#### 3. Backend Setup
+
+```bash
+cd backend
+# download all packages
+uv sync
+
+# run backend
+uv run fastapi dev
+```
+
+#### 4. Frontend Setup
 
 ```bash
 # Navigate to the frontend directory

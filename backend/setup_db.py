@@ -1,6 +1,13 @@
-from pymongo import MongoClient
+import os
 
-client = MongoClient("mongodb://root:examplepassword@localhost:27017/?authSource=admin")
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+MONGO_URL = os.getenv("MONGO_URL")
+client = MongoClient(MONGO_URL)
 db = client.matching
 applicants_collection = db["applicants"]
 applicants_collection.create_index("applicant_id", unique=True)

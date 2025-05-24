@@ -36,7 +36,7 @@ dependencies = [
     { name = "click" },
     { name = "dnspython" },
     { name = "email-validator" },
-    { name = "fastapi" },
+    { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-cli" },
     { name = "greenlet" },
     { name = "h11" },
@@ -79,7 +79,7 @@ requires-dist = [
     { name = "click", specifier = "==8.1.8" },
     { name = "dnspython", specifier = "==2.7.0" },
     { name = "email-validator", specifier = "==2.2.0" },
-    { name = "fastapi", specifier = "==0.115.12" },
+    { name = "fastapi", extras = ["standard"], specifier = "==0.115.12" },
     { name = "fastapi-cli", specifier = "==0.0.7" },
     { name = "greenlet", specifier = "==3.2.1" },
     { name = "h11", specifier = "==0.16.0" },
@@ -180,6 +180,16 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/50/b3/b51f09c2ba432a576fe63758bddc81f78f0c6309d9e5c10d194313bf021e/fastapi-0.115.12-py3-none-any.whl", hash = "sha256:e94613d6c05e27be7ffebdd6ea5f388112e5e430c8f7d6494a9d1d88d43e814d", size = 95164 },
 ]
 
+[package.optional-dependencies]
+standard = [
+    { name = "email-validator" },
+    { name = "fastapi-cli", extra = ["standard"] },
+    { name = "httpx" },
+    { name = "jinja2" },
+    { name = "python-multipart" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
 [[package]]
 name = "fastapi-cli"
 version = "0.0.7"
@@ -192,6 +202,11 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/fe/73/82a5831fbbf8ed75905bacf5b2d9d3dfd6f04d6968b29fe6f72a5ae9ceb1/fastapi_cli-0.0.7.tar.gz", hash = "sha256:02b3b65956f526412515907a0793c9094abd4bfb5457b389f645b0ea6ba3605e", size = 16753 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a1/e6/5daefc851b514ce2287d8f5d358ae4341089185f78f3217a69d0ce3a390c/fastapi_cli-0.0.7-py3-none-any.whl", hash = "sha256:d549368ff584b2804336c61f192d86ddea080c11255f375959627911944804f4", size = 10705 },
+]
+
+[package.optional-dependencies]
+standard = [
+    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [[package]]

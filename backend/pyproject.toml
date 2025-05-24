@@ -11,7 +11,7 @@ dependencies = [
     "click==8.1.8",
     "dnspython==2.7.0",
     "email-validator==2.2.0",
-    "fastapi==0.115.12",
+    "fastapi[standard]==0.115.12",
     "fastapi-cli==0.0.7",
     "greenlet==3.2.1",
     "h11==0.16.0",

@@ -2,7 +2,7 @@ from fastapi.responses import FileResponse
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from ..schemas import UserCreate, RAAppCreate, UserRead, UserLogin
 from ..models import Applicant  # your Pydantic/ORM model used for validating inserts
-from ..utlils import get_password_hash, verify_password
+from ..utlils import get_password_hash, verify_password, mongo_arr_to_dict
 from ..mongo import db
 from bson import ObjectId
 import os
@@ -98,7 +98,7 @@ def get_applicant(du_id: str, db):
 @router.get("/get_all_applicants/")
 def all_applicants_with_preferences():
     applicants = db["applicants"]
-    docs = list(applicants.find({}))
+    docs = mongo_arr_to_dict(list(applicants.find({})))
     if not docs:
         raise HTTPException(status_code=404, detail="No applicants found")
     return docs

@@ -1,7 +1,6 @@
 from .models import Admin, Applicant, Building
 from typing import List, Tuple
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
 from pymongo.collection import Collection
 from .mongo import db
 
